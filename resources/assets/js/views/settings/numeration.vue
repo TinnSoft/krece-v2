@@ -27,7 +27,7 @@
                 <br>
                 <br>
                 <q-data-table :data="table" :config="config" :columns="columns">
-                    <template slot="col-actions" scope="cell">
+                    <template slot="col-actions" slot-scope="cell">
                         <kToggle @blur="lockUnlock(cell.row, $refs)" :isActive="cell.row.isActive"></kToggle>
                         <kButton color="secondary" iconname="edit" tooltiplabel="Editar" @click="editNumerationModal($refs, cell.row)"></kButton>
                         <kButton color="red" iconname="delete" tooltiplabel="Eliminar" @click="remove(cell)"></kButton>

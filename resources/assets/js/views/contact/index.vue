@@ -10,7 +10,7 @@
                     <q-icon name="add_circle_outline" />NUEVO CLIENTE
                 </q-btn>
                 <q-data-table :data="table" :config="config" :columns="columns">
-                    <template slot="col-actions" scope="cell">
+                    <template slot="col-actions" slot-scope="cell">
                         <kButton color="secondary" iconname="edit" tooltiplabel="Editar" @click="editContactModal($refs, cell.row)"></kButton>
                         <kButton color="secondary" iconname="remove_red_eye" tooltiplabel="Ver" @click="show(cell)"></kButton>
                         <kButton color="red" iconname="delete" tooltiplabel="Eliminar" @click="remove(cell,'c')"></kButton>
@@ -22,7 +22,7 @@
                     <q-icon name="add_circle_outline" />NUEVO PROVEEDOR
                 </q-btn>
                 <q-data-table :data="table" :config="config" :columns="columns">
-                    <template slot="col-actions" scope="cell">
+                    <template slot="col-actions" slot-scope="cell">
                         <kButton color="secondary" iconname="edit" tooltiplabel="Editar" @click="editContactModal($refs, cell.row)"></kButton>
                         <kButton color="secondary" iconname="remove_red_eye" tooltiplabel="Ver" @click="show(cell)"></kButton>
                         <kButton color="red" iconname="delete" tooltiplabel="Eliminar" @click="remove(cell,'p')"></kButton>
@@ -34,7 +34,7 @@
                     <q-icon name="add_circle_outline" />NUEVO VENDEDOR
                 </q-btn>
                 <q-data-table :data="table" :config="config" :columns="columns">
-                    <template slot="col-actions" scope="cell">
+                    <template slot="col-actions" slot-scope="cell">
                         <kButton color="secondary" iconname="edit" tooltiplabel="Editar" @click="editSellerModal($refs,'edit',cell.row)"></kButton>
                         <kButton color="red" iconname="delete" tooltiplabel="Eliminar" @click="deleteRow(cell)"></kButton>
                     </template>

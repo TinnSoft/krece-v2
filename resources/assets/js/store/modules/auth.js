@@ -43,24 +43,24 @@ const actions = {
     commit(types.SAVE_TOKEN, payload)
   },
 
+
+  /*
+    fetchUser({ commit }) {
+      return new Promise(async (resolve, reject) => {
+        const user = await api.getByPathAsync('user')
   
-/*
-  fetchUser({ commit }) {
-    return new Promise(async (resolve, reject) => {
-      const user = await api.getByPathAsync('user')
+        if (user) {
+          commit(types.FETCH_USER_SUCCESS, { user })
+          resolve(user)
+        } else {
+          commit(types.FETCH_USER_FAILURE)
+          reject()
+        }
+      })
+    },
+    */
 
-      if (user) {
-        commit(types.FETCH_USER_SUCCESS, { user })
-        resolve(user)
-      } else {
-        commit(types.FETCH_USER_FAILURE)
-        reject()
-      }
-    })
-  },
-  */
-
-  async fetchUser ({ commit }) {
+  async fetchUser({ commit }) {
     try {
       const { data } = await axios.get('/api/user')
 
@@ -76,7 +76,7 @@ const actions = {
   },
 
 
-  async logout ({ commit }) {
+  async logout({ commit }) {
     try {
       await axios.post('/api/logout')
     } catch (e) { }

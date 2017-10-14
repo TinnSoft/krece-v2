@@ -65,7 +65,7 @@ import axios from 'axios'
 
 import {
   QLayout, QIcon, QToolbarTitle, QToolbar, QInput, QSpinnerHourglass,
-  QList, QBtn, QListHeader, QItem, QItemMain, QItemSide, QField, QAlert
+  QList, QBtn, QListHeader, QItem, QItemMain, QItemSide, QField, QAlert, Toast
 } from 'quasar-framework';
 
 
@@ -84,12 +84,12 @@ export default {
   }),
   components: {
     QLayout, QToolbarTitle, QToolbar, QInput, QIcon, QList, QBtn, QSpinnerHourglass,
-    QListHeader, QItem, QItemMain, QItemSide, QField, QAlert
+    QListHeader, QItem, QItemMain, QItemSide, QField, QAlert, Toast
   },
   validations: {
     email: { required, email }
   },
-  methods: {    
+  methods: {
     async login() {
       var vm = this;
       vm.progress = true;
@@ -97,7 +97,7 @@ export default {
       this.form.post('/api/login')
         .then(({ data }) => {
           vm.progress = false;
-         // console.log('login')
+          // console.log('login')
           vm.$store.dispatch('saveToken', {
             token: data.token,
             remember: vm.form.remember
@@ -107,11 +107,14 @@ export default {
           })
 
         }).catch(function(error) {
-         // console.log(error.response)
+          //console.log(error.response)
+          Toast.create.warning({
+            html: 'Lo sentimos... No fue posible conectarse al sistema, porfavor intenta nuevamente.'
+          });
           vm.progress = false;
         });
     }
-    
+
   }
 }
 </script>

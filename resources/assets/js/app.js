@@ -2,10 +2,13 @@ import Vue from 'vue'
 import Router from 'vue-router'
 Vue.use(Router)
 
-require('quasar-extras/roboto-font');
-require('quasar-framework/dist/quasar.mat.css');
-import Quasar from 'quasar-framework';
-Vue.use(Quasar);
+import ZkTable from 'vue-table-with-tree-grid'
+Vue.use(ZkTable)
+
+require('quasar-extras/roboto-font')
+require('quasar-framework/dist/quasar.mat.css')
+import Quasar from 'quasar-framework'
+Vue.use(Quasar)
 
 require('vue-multiselect/dist/vue-multiselect.min.css')
 
@@ -19,7 +22,6 @@ Vue.use(Meta)
 import Vuelidate from 'vuelidate'
 Vue.use(Vuelidate)
 
-//import './bootstrap'
 import './components'
 import './utils/interceptors'
 Vue.config.productionTip = false

@@ -1,17 +1,15 @@
 <template>
+    <q-data-table ref="_mainTable" :data="dataFinal" :config="config" :columns="columns" @refresh="refresh">
+        <template slot="col-status_id" slot-scope="cell">
+            <Remision_Status v-if="kmodule === 'remision'" :id="cell.row.status_id"></Remision_Status>
+            <PaymentInStatus v-if="kmodule === 'payment'" :id="cell.row.status_id"></PaymentInStatus>
+            <PaymentOutStatus v-if="kmodule === 'payment-out'" :id="cell.row.status_id"></PaymentOutStatus>
+            <InvoiceStatus v-if="kmodule === 'invoice'" :id="cell.row.status_id"></InvoiceStatus>
+            <BillStatus v-if="kmodule === 'bill'" :id="cell.row.status_id"></BillStatus>
+            <PurchaseOrderStatus v-if="kmodule === 'purchase-order'" :id="cell.row.status_id"></PurchaseOrderStatus>
+        </template>
 
-        <q-data-table ref="_mainTable" :data="dataFinal" :config="config" :columns="columns" @refresh="refresh">
-            <template slot="col-status_id" scope="cell">
-                <Remision_Status v-if="kmodule === 'remision'" :id="cell.row.status_id"></Remision_Status>
-                <PaymentInStatus v-if="kmodule === 'payment'" :id="cell.row.status_id"></PaymentInStatus>
-                <PaymentOutStatus v-if="kmodule === 'payment-out'" :id="cell.row.status_id"></PaymentOutStatus>
-                <InvoiceStatus v-if="kmodule === 'invoice'" :id="cell.row.status_id"></InvoiceStatus>
-                <BillStatus v-if="kmodule === 'bill'" :id="cell.row.status_id"></BillStatus>
-                <PurchaseOrderStatus v-if="kmodule === 'purchase-order'" :id="cell.row.status_id"></PurchaseOrderStatus>
-            </template>
-
-        </q-data-table>
-   
+    </q-data-table>
 </template>
 <script type="text/javascript">
 
@@ -44,7 +42,7 @@ export default {
     methods: {
         refresh(done) {
             this.timeout = setTimeout(() => {
-                 this.fetchData();
+                this.fetchData();
                 done()
             }, 1000)
         },
@@ -77,55 +75,25 @@ export default {
 
             let vm = this;
             let cols = this.columns;
-            this.children=null;
-            this.clear;
-            console.log('asasasa')
-            if (kmodule === 'estimate') {
-                console.log('llego a estimate')
-                cols = estimateColumns();
-            }
-            else if (kmodule === 'remision') {
-                console.log('llego a remision')
-                cols = remisionColumns();
-            }
-            else if (kmodule === 'invoice') {
-                console.log('llego a invoice')
-                //cols = invoiceColumns();
+            cols.clear;
+            this.refresh;
 
-                vm.$set(vm, 'columns', invoiceColumns());
-                // vm.regularCols=invoiceColumns();
-                //  vm.$set(vm._data, 'columnSelection', invoiceColumns());
-                console.log('indexxx', this.$refs['_mainTable'])
-                  console.log('este', this)
-                // vm.$set(vm, 'cols', invoiceColumns());
+            vm.$delete(vm.columns, 0);
+            vm.$delete(vm.columns, 0);
+            vm.$delete(vm.columns, 0);
+            vm.$delete(vm.columns, 0);
+            vm.$delete(vm.columns, 0);
+            vm.$delete(vm.columns, 0);
+            vm.$delete(vm.columns, 0);
 
-            }
-            else if (kmodule === 'purchase-order') {
-                cols = poColumns();
-            }
-            else if (kmodule === 'bill') {
-                cols = billColumns();
-            }
-            else if (kmodule === 'credit_note') {
-                cols = creditNoteColumns();
-            }
-            else if (kmodule === 'debit_note') {
-                cols = debitNoteColumns();
-            }
-            else if (kmodule === 'payment') {
-                console.log('llego a payment')
-                 vm.$set(vm, 'columns', paymentInColumns());
-                //cols = paymentInColumns();
-            }
-            
+            let colListToApply = vm.xColumns(kmodule)
+
+            vm.$set(vm, 'columns', colListToApply);
+
             this.fetchData(`getContactReports/${kmodule}/${id}`);
 
         },
-        xColumns() {
-            
-            let kmodule=this.kmodule;
-
-             console.log('indexxx', this.$refs['_mainTable'])
+        xColumns(kmodule) {
 
             if (kmodule === 'estimate') {
                 return estimateColumns();

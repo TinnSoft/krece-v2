@@ -1,7 +1,9 @@
 <template>
     <q-datetime :color="color" monday-first  @change="handleChange"
     :value="value" :clear-label="clearLabel" :ok-label="okLabel" 
-    :cancel-label="cancelLabel" :month-names="monthNames" :day-names="dayNames" :stack-label="stackLabel" />
+    :cancel-label="cancelLabel" :month-names="monthNames" 
+    :day-names="dayNames" :stack-label="stackLabel"
+    :default-selection="value" />
 </template>
 <script type="text/javascript">
 

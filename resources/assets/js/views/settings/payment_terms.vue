@@ -7,7 +7,7 @@
         <br>
         <br>
         <q-data-table :data="table" :config="config" :columns="columns">
-            <template slot="col-actions" scope="cell">               
+            <template slot="col-actions" slot-scope="cell">               
                 <kButton color="secondary" iconname="edit" tooltiplabel="Editar" @click="editModal($refs, cell.row)"></kButton>
                 <kButton color="red" iconname="delete" tooltiplabel="Eliminar" @click="remove(cell)"></kButton>
             </template>

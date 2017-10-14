@@ -1,11 +1,11 @@
 <template>
     <div>
         <q-data-table ref="mainTable" :data="table" :config="config" :columns="columns" @refresh="refresh">
-            <template slot="col-public_id" scope="cell">
+            <template slot="col-public_id" slot-scope="cell">
                 <u style="color: green;cursor: pointer " @click="show(cell)">{{cell.row.public_id}}</u>
             </template>
 
-            <template v-if="hasStatus===true" slot="col-status_id" scope="cell">
+            <template v-if="hasStatus===true" slot="col-status_id" slot-scope="cell">
                 <Remision_Status v-if="kmodule === 'remision'" :id="cell.row.status_id"></Remision_Status>
                 <PaymentInStatus v-if="kmodule === 'payment-in'" :id="cell.row.status_id"></PaymentInStatus>
                 <PaymentOutStatus v-if="kmodule === 'payment-out'" :id="cell.row.status_id"></PaymentOutStatus>
@@ -14,7 +14,7 @@
                 <PurchaseOrderStatus v-if="kmodule === 'purchase-order'" :id="cell.row.status_id"></PurchaseOrderStatus>
             </template>
 
-            <template slot="col-actions" scope="cell">
+            <template slot="col-actions" slot-scope="cell">
 
                 <template v-if="hasLockedBtn===true">
                     <Toggle @blur="lockUnlock(cell.row, $refs)" :id="cell.row.status_id"></Toggle>

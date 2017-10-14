@@ -1,35 +1,35 @@
 <template>
     <div>
         <q-data-table :data="qdata" :config="config" :columns="columns">
-            <template slot="col-amount_receipt" scope="cell">
+            <template slot="col-amount_receipt" slot-scope="cell">
                 <q-input color="secondary" class="no-margin no-padding" @change="onChange" type="number" prefix="$" v-model="qdata[cell.row.__index].amount_receipt" :value="qdata[cell.row.__index].amount_receipt" />
             </template>
 
-            <template slot="col-tax_id" scope="cell">
+            <template slot="col-tax_id" slot-scope="cell">
                 <q-select color="secondary" class="no-margin no-padding" float-label="Seleccione" v-model="qdata[cell.row.__index].tax_id" :options="taxlist" />
             </template>
 
-            <template slot="col-category_id" scope="cell">
+            <template slot="col-category_id" slot-scope="cell">
                 <q-select color="secondary" filter filter-placeholder="Buscar" class="no-margin no-padding" float-label="Seleccione" v-model="qdata[cell.row.__index].category_id" :options="categorylist" />
             </template>
 
-            <template slot="col-unit_price" scope="cell">
+            <template slot="col-unit_price" slot-scope="cell">
                 <q-input color="secondary" class="no-margin no-padding" @change="onChange" type="number" prefix="$" v-model="qdata[cell.row.__index].unit_price" :value="qdata[cell.row.__index].unit_price" />
             </template>
 
-            <template slot="col-quantity" scope="cell">
+            <template slot="col-quantity" slot-scope="cell">
                 <q-input color="secondary" class="no-margin no-padding" @change="onChange" type="number" v-model="qdata[cell.row.__index].quantity" />
             </template>
 
-            <template slot="col-observations" scope="cell">
+            <template slot="col-observations" slot-scope="cell">
                 <q-input color="secondary" class="no-margin no-padding" placeholder="Observaciones" v-model="qdata[cell.row.__index].observations" />
             </template>
             
-            <template slot="col-ctotal" scope="cell">
+            <template slot="col-ctotal" slot-scope="cell">
                 <q-input :value="ftotal(qdata[cell.row.__index])" disable />
             </template>
 
-            <template slot="col-actions" scope="cell">
+            <template slot="col-actions" slot-scope="cell">
                 <q-btn flat color="red" small v-bind:style="styleButton" @click="deleteRow(cell)">
                     <q-icon name="delete" size="24px" />
                     <q-tooltip>

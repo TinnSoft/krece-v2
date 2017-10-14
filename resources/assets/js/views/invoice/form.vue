@@ -21,7 +21,7 @@
                             </q-field>
                         </template>
                         <q-field :error="checkIfFieldHasError(errors, 'customer_id')" error-label="Este campo es obligatorio">
-                            <q-select color="secondary" @change="onChangeContact" filter filter-placeholder="Buscar" stack-label="*Cliente" v-model="form.customer_id" :options="base.contacts" />
+                            <q-select color="secondary" @change="onChangeContact" autofocus-filter filter filter-placeholder="Buscar" stack-label="*Cliente" v-model="form.customer_id" :options="base.contacts" />
                         </q-field>
                         <q-field :error="checkIfFieldHasError(errors,'date')" error-label="Seleccione una fecha válida">
                             <kDateTime v-model="form.date" stackLabel="*Fecha (Año-Mes-Dia)"></kDateTime>
@@ -83,7 +83,7 @@
                     </td>
                     <td data-th="PRODUCTO" style="width: 12em">
                         <q-field :error="checkIfFieldHasError(errors,['detail.' + index + '.product_id'])" error-label="Seleccione un producto">
-                            <q-select @change="onChangeProduct(_detail)" class="no-margin no-padding" filter filter-placeholder="Buscar producto" v-model="_detail.product_id" :options="base.products" />
+                            <q-select @change="onChangeProduct(_detail)" class="no-margin no-padding" autofocus-filter filter filter-placeholder="Buscar producto" v-model="_detail.product_id" :options="base.products" />
                         </q-field>
                     </td>
 
@@ -109,7 +109,7 @@
                     </td>
                     <td data-th="IMPUESTO" style="width: 6em">
                         <q-field>
-                            <q-select @change="onChangeTax(_detail)" class="no-margin no-padding" filter filter-placeholder="Buscar producto" v-model="_detail.tax_id" :options="base.taxes" />
+                            <q-select @change="onChangeTax(_detail)" class="no-margin no-padding" autofocus-filter filter filter-placeholder="Buscar producto" v-model="_detail.tax_id" :options="base.taxes" />
                         </q-field>
                     </td>
                     <td data-th="TOTAL" style="width: 8em">

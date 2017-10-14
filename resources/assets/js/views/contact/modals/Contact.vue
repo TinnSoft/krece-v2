@@ -134,10 +134,10 @@
 
               <q-item-separator color="secondary" />
               <q-data-table :data="form.contact_others" :config="config" :columns="columns">
-                <template slot="col-notify" scope="cell">
+                <template slot="col-notify" slot-scope="cell">
                   <q-checkbox v-model="cell.row.notify" color="secondary" />
                 </template>
-                <template slot="col-actions" scope="cell">
+                <template slot="col-actions" slot-scope="cell">
 
                   <kButton color="secondary" iconname="edit" tooltiplabel="Editar" @click="editAssociate(cell)"></kButton>
                   <kButton color="red" iconname="delete" tooltiplabel="Eliminar" @click="deleteAssociate(cell)"></kButton>

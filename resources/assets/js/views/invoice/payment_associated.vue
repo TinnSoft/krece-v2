@@ -1,6 +1,6 @@
 <template>
     <q-data-table :data="qdata" :config="config" :columns="columns">
-        <template slot="col-status_id" scope="cell">
+        <template slot="col-status_id" slot-scope="cell">
             <InvoiceStatus :id="cell.row.status_id"></InvoiceStatus>
         </template>
 

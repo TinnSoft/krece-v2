@@ -151,13 +151,11 @@ export default {
                     icon: 'attach_money',
                     value: 'bill'
                 },
-
                 {
                     label: 'Notas débito',
                     icon: 'attach_money',
                     value: 'debit_note'
                 },
-
                 {
                     label: 'Remisiones',
                     icon: 'attach_money',

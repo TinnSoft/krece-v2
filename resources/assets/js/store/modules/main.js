@@ -43,7 +43,7 @@ const actions = {
             commit(types.SET_MODEL, data)
             commit(types.LOADING_END)
         }, function (error) {
-          //  console.log(error);
+            //  console.log(error);
         })
     },
     async fetchFormById({
@@ -79,7 +79,7 @@ const actions = {
 
         }, function (error) {
             //console.log(error);
-            if (error.status === 422) {                
+            if (error.status === 422) {
                 if (error.data.custom_message) {
                     Toast.create.negative(error.data.message[0])
                 }

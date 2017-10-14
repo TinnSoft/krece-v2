@@ -72,7 +72,7 @@ export default {
         {
           icon: 'library_books',
           title: 'CATEGORIAS',
-          path: '/config4',
+          path: '/category',
           type: 'alone'
         },
         {
