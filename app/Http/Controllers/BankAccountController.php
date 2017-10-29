@@ -31,15 +31,15 @@ class BankAccountController extends Controller
     public function index()
     {
       
-        return view('bank_account.index');
+       // return view('bank_account.index');
   
     }
     public function bankList()
-    {
-        $baseInfo=[
-        'bank'=>Helper::bank_account()
-        ];        
-        return response()->json($baseInfo);
+    {      
+        return response()
+        ->json([
+            'records' =>Helper::bank_account()
+        ]);
     }
 
     public function bank_transaction_history($bank_id)
@@ -192,22 +192,29 @@ class BankAccountController extends Controller
                'description','id'
                )->get(); 
 
-        return response()->json($accountlist);  
+               return response()
+               ->json([
+                   'records' => $accountlist
+               ]);
     }
 
     //Rtorna la información necesaria para el header de las facturas/cotizaciones.etc
     public function BaseInfo()
     {
-        $bankaccountlist = BankAccountType::select('id', 'description') 
-               ->get();
-             
-     return response()->json($bankaccountlist);
+                     
+         return [                
+            'bankaccountlist' => BankAccountType::select('id as value', 'description as label')->get()         
+                ];
 
     }
 
     public function create()
     {
-        return view('bank_account.create');        
+        return response()
+        ->json([
+            'form' => BankAccount::initialize(),
+            'base' => $this->BaseInfo()
+        ]);    
     }
         
     public function store(Request $request)
@@ -253,7 +260,10 @@ class BankAccountController extends Controller
           return redirect('/bank_account')->with($notification);
         }
     
-        return view('bank_account.show', compact('account'));
+        return response()
+        ->json([
+            'model' => $account,
+        ]);
     }
 
     public function edit($id)
@@ -271,8 +281,11 @@ class BankAccountController extends Controller
           return redirect('/bank_account')->with($notification);
         }
 
-         return view('bank_account.edit', compact('account'));
-         
+        return response()
+        ->json([
+            'form' =>  $account,
+            'base' => $this->BaseInfo()
+        ]);
          
     }
 

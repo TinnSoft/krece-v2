@@ -1,132 +1,121 @@
 <template>
-    <div class="layout-padding docs-tab">
-        <table class="q-table responsive">
-            <thead>
-                <tr>
-                    <th></th>
-                    <th v-for="(column, index) in columns">{{column}}</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="(rowx, index) in table">
-                    <td>
-                        <q-icon v-if="hasChildren(rowx.children)===true" style="cursor: pointer;" name="add_circle_outline" color="green" />
-                    </td>
-
-                    <td>{{rowx.title}}</td>
-                    <td>{{rowx.icon}}</td>
-                </tr>
-
-            </tbody>
-        </table>
-
-        <!--
-                <table class="q-table">
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th v-for="(column, index) in columns">{{column}}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <item :row.sync="table" :cols.sync="columns"></item>
-                    </tbody>
-                </table>
-        -->
-      <table class="q-table cell-separator highlight bordered">
-            <thead>
-                <tr>
-                    <th></th>
-                    <th v-for="(column, index) in columns" :key="index">{{column}}</th>
-                </tr>
-            </thead>
-            <tbody>
-                <item class="item" :model="table" :columns="columns"></item>
-            </tbody>
-        </table>
-        
+  <div class="layout-padding row ">
+    <div style="width: 500px; max-width: 90vw;">
+      <treetable
+        :dataTree="table"
+      />
+      
+   
+           
     </div>
+  </div>
 </template>
 
 <script>
-import { QTree, Toast, QIcon } from 'quasar-framework'
-import item from './rowItem.vue'
-import axios from 'axios'
-
-
+import { Toast, QIcon } from "quasar-framework";
+import treetable from '../../components/treeTable/TreeTable.vue';
 
 export default {
-    components: {
-        QTree, QIcon, item
-    },
-    methods: {
-        hasChildren(val) {
-            try {
-                if (val.length > 0) {
-                    return true
-                }
-            } catch (e) {
-            }
-
-            return false
-        },
-    },
-    data() {
-        return {
-            columns: [
-                'Nombre',
-                'Descripción',
-                'Acciones',
-            ],
-            table: [{
-                name:'sub-1',
-                children: [
-                    { name: 'sub-2' },
-                    { name: 'sub 3' },
-                    {
-                        name: 'sub4',
-                        children: [
-                            {
-                                name: 'sub41',
-                                children: [
-                                    { name: 'sub411' },
-                                    { name: 'sub 412' }
-                                ]
-                            },
-                            { name: 'sub 51' },
-                            { name: 'sub 52' },                            
-                        ]
-                    }
-                ]
+  components: {
+    QIcon, treetable
+  },
+  data() {
+    return {
+     table: [
+        {
+          id: 1,
+          name: "John",
+          score: 130,
+          city: "New York",
+          birthday: "1980/2/5",
+          children: [
+            {
+              id: 6,
+              name: "John2",
+              score: 82,
+              city: "San Fran1",
+              birthday: "1990/1/21"
             },
             {
-                name:'sub-2'
+              id: 7,
+              name: "John2",
+              score: 81,
+              city: "San Fran2",
+              birthday: "1990/1/22",
+              children: [
+                {
+                  id: 8,
+                  name: "John3",
+                  score: 89,
+                  city: "San Francisco",
+                  birthday: "1990/1/21"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          id: 2,
+          name: "Alice",
+          score: 123,
+          city: "Washington",
+          birthday: "1984/3/7"
+        },
+        {
+          id: 3,
+          name: "Lee",
+          score: 149,
+          city: "Shanghai",
+          birthday: "1986/10/8"
+        },
+        {
+          id: 4,
+          name: "Mike",
+          score: 100,
+          city: "London",
+          birthday: "1988/8/12"
+        },
+        {
+          id: 5,
+          name: "Tom",
+          score: 89,
+          city: "San Francisco",
+          birthday: "1990/1/21",
+          children: [
+            {
+              id: 9,
+              name: "Tom1",
+              score: 77,
+              city: "San Francisco",
+              birthday: "1990/1/21"
             },
-             {
-                name:'sub-3',
-                children: [
-                    { name: 'sub-2' },
-                    { name: 'sub 3' },
-                    {
-                        name: 'sub4'
-                    }
-                ]
-            }],
+            {
+              id: 10,
+              name: "Tom2",
+              score: 85,
+              city: "San Francisco",
+              birthday: "1990/1/21"
+            },
+            {
+              id: 11,
+              name: "Tom3",
+              score: 83,
+              city: "San Francisco",
+              birthday: "1990/1/21"
+            }
+          ]
         }
-    }
-}
+      ]
+    };
+  },
+  computed: {
+  },
+  methods: {
+ 
+  },
+  created() {
+   
+  },
+  filters: {}
+};
 </script>
-
-<style>
-.table td {
-    border-top: 1px solid #f4f4f4;
-    padding: 8px;
-    line-height: 1.42857143;
-    vertical-align: top;
-    border-top: 1px solid #ddd;
-}
-
-i {
-    cursor: pointer;
-}
-</style>

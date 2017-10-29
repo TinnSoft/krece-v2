@@ -60,6 +60,9 @@ export default [
 
     { path: '/category', name: 'category_index', component: require('../views/category/index.vue') },
 
+    { path: '/bank', name: 'bank_index', component: require('../views/bank/index.vue') },
+    { path: '/bank/:id', name: 'bank_show', component: require('../views/bank/show.vue') },
+
     {
       path: '/settings',
       component: require('../views/settings/index.vue'),

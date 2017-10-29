@@ -66,7 +66,7 @@ export default {
         {
           icon: 'business',
           title: 'BANCOS',
-          path: '/config3',
+          path: '/bank',
           type: 'alone'
         },
         {

@@ -22,5 +22,15 @@ class BankAccount extends Model
     {
         return $this->hasOne(BankAccountType::class,'id','bank_account_type_id');
     }
+    public static function initialize()
+    {
+        return [
+			'bank_account_name'=>null,
+			'bank_account_type_id'=>null,
+			'bank_account_number'=>null,
+			'initial_balance' => 0, 
+			'description'=>null
+        ];
+    }
 
 }

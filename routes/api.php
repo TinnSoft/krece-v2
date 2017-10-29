@@ -137,6 +137,15 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::delete('deleteDocuments/{id}', 'UploadController@delete');
     Route::get('downloadDocuments/{id}', 'UploadController@download');
     Route::post('document', 'UploadController@uploadDocument');
+
+    //Bank accounts
+    Route::resource('bank', 'BankAccountController');
+    Route::get('getBankAccount_Type','BankAccountController@BaseInfo');
+    Route::get('getBankAccountlist','BankAccountController@BankAccountIndex');
+    Route::get('getBankList','BankAccountController@bankList');
+    Route::get('getbank_transaction_history/{bank_id}','BankAccountController@bank_transaction_history');
+    Route::post('saveBankTransference','BankAccountController@CreateBankTransference');
+
 });
 
 Route::group(['middleware' => 'guest:api'], function () {
