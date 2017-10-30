@@ -1,21 +1,27 @@
 <template>
-       <table class="q-table bordered cell-separator">
+       <table class="q-table bordered cell-separator highlight">
                 <thead>
                     <tr>
-                        <td>ID</td>
-                        <td>Name</td>
+                        
+                        <td>Nombre</td>
+                        <td>Ciudad</td>
+                        <td>Fecha</td>
+                        <td>Score</td>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="(item ,index)  in (arrayTreeObj)" :key="index" >
-                        <td>
-                            <span v-bind:style="setPadding(item)">                
-                                 <q-icon  style="cursor: pointer;" :name="iconName(item)" color="green" @click="toggle(item, index)" />
-                                {{item.id}}
+                        <td class="q-tree-link q-tree-label" @click="toggle(item, index)">
+                        
+                            <span v-bind:style="setPadding(item)" >                
+                                 <q-icon  style="cursor: pointer;" :name="iconName(item)" color="green-4"  />
+                                {{item.name}}
                             </span>
+                        
                         </td>
-                        <td>{{item.name}}</td>
-                        <td>{{index}}} </td>
+                        <td>{{item.city}}</td>
+                        <td>{{item.birthday}} </td>
+                        <td>{{item.score}}</td>
                     </tr>
                 </tbody>
            </table>
@@ -31,6 +37,14 @@ export default {
     dataTree: {
       type: Array,
       default: () => []
+    },
+    columns: {
+      type: [Array, Object],
+      default: () => []
+    },
+    route: {
+      type: String,
+      default: null
     }
   },
   components: {
@@ -40,59 +54,40 @@ export default {
     return {
       autoID: 0,
       itemId: null,
-      isExpend: true,
-      treeData: [],
-      treeDataClone: [],
+      isExpend: true
     };
   },
   computed: {
     arrayTreeObj() {
       let vm = this;
       var newObj = [];
-      vm.recursive(vm.treeData, newObj, 0, vm.itemId, vm.isExpend);
+      vm.recursive(vm.dataTree, newObj, 0, vm.itemId, vm.isExpend);
       return newObj;
     }
   },
   methods: {
     iconName(item) {
       if (item.expend == true) {
-        return "remove";
+        return "remove_circle_outline";
       }
 
-      if (item.leaf == false) {
-        return "add";
+      if (item.children) {
+        return "control_point";
       }
 
-      return "keyboard_arrow_right";
+      return "chevron_right";
     },
     toggle(item, index) {
       let vm = this;
       vm.itemId = item.id;
-      vm.isExpend = true;      
-      item.leaf = false;
-      /* if (item.leaf == false && item.expend == false) {
-        item.expend = undefined;
-        vm.isExpend = false;
-        vm.itemId = null;
-      }*/
 
+      item.leaf = false;
       //Muestra los sub items al dar click en +
       if (
         item.leaf == false &&
         item.expend == undefined &&
         item.children != undefined
       ) {
-        //console.log("abrir:", item.__uniqueID);
-        if (item.children.length == 0) {
-          let originalChildren = vm.getOriginalChildrenData(item.id);
-          console.log("abrir", originalChildren);
-          // item.children.push(vm.childrenx[0]);
-          // item.children= vm.childrenx.slice(0);
-          if (originalChildren != null) {
-            item.children = originalChildren;
-          }
-        }
-
         if (item.children.length != 0) {
           vm.recursive(item.children, [], item.level + 1, item.id, true);
         }
@@ -101,11 +96,10 @@ export default {
       //Eliminar items cuando se da click en ocultar fila
       if (item.expend == true && item.children != undefined) {
         var __subindex = 0;
+        item.children.forEach(function(o) {
+          o.expend = undefined;
+        });
 
-        while (item.children.length > 0) {
-          //item.children.splice(item.children.length - 1, 1);
-          vm.$delete(item.children, item.children.length - 1);
-        }
         vm.$set(item, "expend", undefined);
         vm.$set(item, "leaf", false);
         vm.itemId = null;
@@ -136,16 +130,7 @@ export default {
         }
       });
     },
-    getOriginalChildrenData(uniqueID) {
-      let vm = this;
-      var valuetoReturn = null;
-      vm.dataTree.forEach(function(tdc) {
-        if (tdc.id == uniqueID) {
-          valuetoReturn = tdc.children;
-        }
-      });
-      return valuetoReturn;
-    },
+
     generateAutoID(tData) {
       let vm = this;
       tData.forEach(function(td) {
@@ -155,13 +140,14 @@ export default {
           vm.generateAutoID(td.children);
         }
       });
-    }
+    },
+    fetchData() {}
   },
-  created() {
-    let vm = this;
-    vm.treeData = vm.dataTree.slice(0);
-    vm.treeDataClone = vm.dataTree.slice(0);
-  },
+  created() {},
   filters: {}
 };
 </script>
+
+
+<style lang="stylus">
+</style>

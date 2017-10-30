@@ -1,27 +1,26 @@
 <template>
   <div class="layout-padding row ">
-    <div style="width: 500px; max-width: 90vw;">
+    <div style="width: 500px; max-width: 200vw;">
       <treetable
         :dataTree="table"
       />
       
-   
-           
     </div>
   </div>
 </template>
 
 <script>
 import { Toast, QIcon } from "quasar-framework";
-import treetable from '../../components/treeTable/TreeTable.vue';
+import treetable from "../../components/treeTable/TreeTable.vue";
 
 export default {
   components: {
-    QIcon, treetable
+    QIcon,
+    treetable
   },
   data() {
     return {
-     table: [
+      table: [
         {
           id: 1,
           name: "John",
@@ -108,14 +107,9 @@ export default {
       ]
     };
   },
-  computed: {
-  },
-  methods: {
- 
-  },
-  created() {
-   
-  },
+  computed: {},
+  methods: {},
+  created() {},
   filters: {}
 };
 </script>
