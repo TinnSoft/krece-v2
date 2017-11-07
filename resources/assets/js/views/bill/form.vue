@@ -336,7 +336,7 @@ export default {
             }
         },
         fetchData() {
-            var vm = this;
+            let vm = this;
             axios.get(`/api/${this.path}`)
                 .then(function(response) {
                     vm.$set(vm, 'form', response.data.form)

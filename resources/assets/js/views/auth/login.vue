@@ -91,23 +91,24 @@ export default {
   },
   methods: {
     async login() {
-      var vm = this;
+      let vm = this;
       vm.progress = true;
 
-      this.form.post('/api/login')
+      vm.form.post('/api/login')
         .then(({ data }) => {
           vm.progress = false;
-          // console.log('login')
+           console.log('login',data.token)
           vm.$store.dispatch('saveToken', {
             token: data.token,
             remember: vm.form.remember
           })
+          console.log('dispatch')
           vm.$store.dispatch('fetchUser').then(() => {
             vm.$router.push({ name: 'home' })
           })
 
         }).catch(function(error) {
-          //console.log(error.response)
+          console.log('errror',error)
           Toast.create.warning({
             html: 'Lo sentimos... No fue posible conectarse al sistema, porfavor intenta nuevamente.'
           });

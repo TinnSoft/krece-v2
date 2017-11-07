@@ -15,7 +15,7 @@ class CategoryController extends Controller
 
     public function index()
     {
-        return view('category.index');
+      //  return view('category.index');
     }
  
     public function CategoryIncome()
@@ -30,7 +30,8 @@ class CategoryController extends Controller
 
     public function CategoryAll()
     {   
-        $categories=  Category::CategoryAttributes()->get();
+        $categories=  Category::CategoryAttributes()->get()->toTree();
+       
         return response()->json($categories);  
     }
         

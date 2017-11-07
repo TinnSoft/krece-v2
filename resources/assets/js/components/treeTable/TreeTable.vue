@@ -1,27 +1,31 @@
 <template>
-       <table class="q-table bordered cell-separator highlight">
+            <table style="overflow-x:auto;" class="q-table bordered vertical-separator highlight compact striped responsive">
                 <thead>
                     <tr>
                         
-                        <td>Nombre</td>
-                        <td>Ciudad</td>
-                        <td>Fecha</td>
-                        <td>Score</td>
+                        <td >NOMBRE</td>
+                        <td >DESCRIPCIÓN</td>
+                        <td>CUENTA NIIF</td>
+                        <td>ACCIONES</td>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="(item ,index)  in (arrayTreeObj)" :key="index" >
-                        <td class="q-tree-link q-tree-label" @click="toggle(item, index)">
+                        <td  @click="toggle(item, index)" >
                         
-                            <span v-bind:style="setPadding(item)" >                
-                                 <q-icon  style="cursor: pointer;" :name="iconName(item)" color="green-4"  />
+                            <span class="q-tree-link q-tree-label" v-bind:style="setPadding(item)" >                
+                                 <q-icon  style="cursor: pointer;" :name="iconName(item)" color="secondary"  />
                                 {{item.name}}
                             </span>
                         
                         </td>
-                        <td>{{item.city}}</td>
-                        <td>{{item.birthday}} </td>
-                        <td>{{item.score}}</td>
+                        <td>{{item.description}}</td>
+                        <td>{{item.niif_account}} </td>
+                        <td> 
+                        <kButton color="secondary" iconname="add_circle" tooltiplabel="Agregar Categoría" @click="edit(cell)"></kButton>
+                         <kButton  v-if="item.isEditable==true" color="secondary"   iconname="edit" tooltiplabel="Editar" @click="edit(cell)"></kButton>
+                        <kButton v-if="item.isEditable==true" color="red"  iconname="delete" tooltiplabel="Eliminar Categoría" @click="deleteRow(cell)"></kButton>                        
+                        </td>
                     </tr>
                 </tbody>
            </table>
@@ -30,14 +34,12 @@
 </template>
 
 <script>
-import { Toast, QIcon } from "quasar-framework";
+import { Toast, QIcon, QModal, QModalLayout} from "quasar-framework";
+import kButton from '../tables/Button.vue'
+import axios from "axios";
 
 export default {
   props: {
-    dataTree: {
-      type: Array,
-      default: () => []
-    },
     columns: {
       type: [Array, Object],
       default: () => []
@@ -48,11 +50,11 @@ export default {
     }
   },
   components: {
-    QIcon
+    QIcon,kButton,QModal, QModalLayout
   },
   data() {
     return {
-      autoID: 0,
+      table: [],
       itemId: null,
       isExpend: true
     };
@@ -61,7 +63,7 @@ export default {
     arrayTreeObj() {
       let vm = this;
       var newObj = [];
-      vm.recursive(vm.dataTree, newObj, 0, vm.itemId, vm.isExpend);
+      vm.recursive(vm.table, newObj, 0, vm.itemId, vm.isExpend);
       return newObj;
     }
   },
@@ -71,7 +73,7 @@ export default {
         return "remove_circle_outline";
       }
 
-      if (item.children) {
+      if (item.children && item.children.length > 0) {
         return "control_point";
       }
 
@@ -131,23 +133,49 @@ export default {
       });
     },
 
-    generateAutoID(tData) {
+    fetchData() {
       let vm = this;
-      tData.forEach(function(td) {
-        td.__uniqueID = vm.autoID;
-        vm.autoID++;
-        if (td.children && td.children.length != 0) {
-          vm.generateAutoID(td.children);
-        }
-      });
-    },
-    fetchData() {}
+      if (vm.route.length > 0) {
+        axios
+          .get(`/api/${vm.route}`)
+          .then(function(response) {
+            vm.$set(vm, "table", response.data);
+            //console.log("tree datos reales", response.data);
+          })
+          .catch(function(error) {
+            if (error.response.data.message) {
+              Toast.create.negative(error.response.data.message);
+            }
+            if (error.response.data.redirectTo) {
+              vm.$router.replace(`${error.response.data.redirectTo}`);
+            }
+          });
+      }
+    }
   },
-  created() {},
+  created() {
+    this.fetchData();
+  },
   filters: {}
 };
 </script>
 
 
 <style lang="stylus">
+table {
+    font-size: 88%;
+    table-layout: auto;
+    width: 100%;
+}
+td {
+  font-size: 12px;
+}
+
+thead {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #4CAF50;
+  color: white;
+}
 </style>

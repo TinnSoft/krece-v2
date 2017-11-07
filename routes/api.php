@@ -129,6 +129,11 @@ Route::group(['middleware' => 'auth:api'], function () {
     //dashboard
     Route::get('getDashboardInfo','AppController@getDashboardInfo');
     
+    //Category
+    Route::resource('category', 'CategoryController');
+    Route::get('getCategoryIncome','CategoryController@CategoryIncome');
+    Route::get('getCategoryAll','CategoryController@CategoryAll');
+
     //enviar documentos adjuntos por correos
     Route::post('sendEmailToContact', 'ContactsController@sendEmailToContact');
 
