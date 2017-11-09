@@ -8,7 +8,7 @@
         
     </q-data-table>
     <q-inner-loading :visible="isProcessing">
-        <q-spinner-mat size="50px" color="teal-4" />Espere por favor...
+        <q-spinner-mat size="100px" color="teal-4" />Espere por favor...
     </q-inner-loading>
     </div>
 </template>
