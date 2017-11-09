@@ -35,87 +35,111 @@
 
 <script>
 import {
-  QList, QModal, QSpinner,
+  QList,
+  QModal,
+  QSpinner,
   QListHeader,
-  QItem, Toast,
+  QItem,
+  Toast,
   QItemSeparator,
   QItemSide,
-  QItemMain, QField, QSpinnerGears,
-  QItemTile, QBtn, QCard, QCardTitle, QCardMain,
-  QToolbar, QToolbarTitle, QIcon, QUploader, QInput
-} from 'quasar-framework'
+  QItemMain,
+  QField,
+  QSpinnerGears,
+  QItemTile,
+  QBtn,
+  QCard,
+  QCardTitle,
+  QCardMain,
+  QToolbar,
+  QToolbarTitle,
+  QIcon,
+  QUploader,
+  QInput
+} from "quasar-framework";
 
-import axios from 'axios'
+import axios from "axios";
 
 export default {
   data() {
     return {
-      url: '/api/document',
+      url: "/api/document",
       error: false,
-      helper: 'Recuerda que el tamaño máximo de los archivos a cargar es de 2MB',
+      helper:
+        "Recuerda que el tamaño máximo de los archivos a cargar es de 2MB",
       documentList: [],
-      model: '',
-      public_id: '',
+      model: "",
+      public_id: "",
       additionalfields: []
-    }
+    };
   },
   components: {
-    QList, QModal,
+    QList,
+    QModal,
     QListHeader,
     QItem,
     QItemSeparator,
     QItemSide,
-    QItemMain, QField,
-    QItemTile, QBtn, QCard, QCardTitle, QCardMain,
-    QToolbar, QToolbarTitle, QIcon, QUploader, QInput
+    QItemMain,
+    QField,
+    QItemTile,
+    QBtn,
+    QCard,
+    QCardTitle,
+    QCardMain,
+    QToolbar,
+    QToolbarTitle,
+    QIcon,
+    QUploader,
+    QInput
   },
 
   methods: {
     endUpload(ref) {
-       console.log(ref.testx);
+      console.log(ref.testx);
       if (ref.testx.files[0].__failed == true) {
-        Toast.create.negative('Algo salió mal con la carga del archivo, intente nuevamente');
+        Toast.create.negative(
+          "Algo salió mal con la carga del archivo, intente nuevamente"
+        );
+      } else {
+        Toast.create.positive("Se cargó el archivo correctamente");
       }
-      else {
-        Toast.create.positive('Se cargó el archivo correctamente');
-      }
-      this.fetchData(); 
-
+      this.fetchData();
     },
     fetchData() {
       var vm = this;
-      axios.get(`/api/getDocuments/${vm.public_id}/${vm.model}`)
+      axios
+        .get(`/api/getDocuments/${vm.public_id}/${vm.model}`)
         .then(function(response) {
-          vm.$set(vm.$data, 'documentList', response.data.list);
+          vm.$set(vm.$data, "documentList", response.data.list);
         })
-        .catch(function(error) {
-        })
-
+        .catch(function(error) {});
     },
     downloadFile(id) {
       var vm = this;
-      axios.get(`/api/downloadDocuments/${id}`)
+      axios
+        .get(`/api/downloadDocuments/${id}`)
         .then(function(response) {
           // console.log(response.data);
         })
-        .catch(function(error) {
-        })
-
+        .catch(function(error) {});
     },
     deleteRow(id) {
-      var vm = this
+      var vm = this;
       if (id) {
-        axios.delete('/api/deleteDocuments/' + id)
+        axios
+          .delete("/api/deleteDocuments/" + id)
           .then(function(response) {
             if (response.data.deleted) {
               vm.fetchData();
-              Toast.create.positive('Se eliminó el archivo correctamente');
+              Toast.create.positive("Se eliminó el archivo correctamente");
             }
           })
           .catch(function(error) {
-
-            Toast.create.negative('No se pudo eliminar el archivo, intente nuevamente');
-          })
+            Toast.create.negative(
+              "No se pudo eliminar el archivo, intente nuevamente"
+            );
+          });
       }
     },
     open(id, model) {
@@ -124,22 +148,24 @@ export default {
 
       this.additionalfields = [
         {
-          name: 'model', value: model
+          name: "model",
+          value: model
         },
         {
-          name: 'publicID', value: id
+          name: "publicID",
+          value: id
         }
       ];
 
-      let data = new FormData();;
-      this.$refs['attachFileModal'].open();
+      let data = new FormData();
+      this.$refs["attachFileModal"].open();
       this.fetchData();
-    },
+    }
   }
-}
+};
 </script>
 <style>
-.inputfile+label {
+.inputfile + label {
   font-size: 1.25em;
   font-weight: 700;
   color: white;
@@ -147,8 +173,8 @@ export default {
   display: inline-block;
 }
 
-.inputfile:focus+label,
-.inputfile+label:hover {
+.inputfile:focus + label,
+.inputfile + label:hover {
   background-color: red;
 }
 </style>
