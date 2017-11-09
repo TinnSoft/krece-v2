@@ -1,6 +1,6 @@
 <template>
   <div class="layout-padding justify-center docs-tab">
-    <div style="width: 400px; max-width: 90vw;">
+
 
       <q-modal ref="sellerModal" minimized :content-css="{padding: '10px'}" @close="handleClose">
         <q-toolbar color="teal-14">
@@ -15,18 +15,18 @@
         </q-toolbar>
 
         <div class="doc-container">
-          <div class="row ">
+       
             <q-list style="border: 0;padding: 0">
-              <q-input class="no-margin no-padding" color="secondary" v-model="form.name" float-label="*Nombre" />
-              <q-input class="no-margin no-padding" color="secondary" v-model="form.dni" float-label="# Identificación" />
-              <q-input class="no-margin no-padding" color="secondary" v-model="form.work_phone" float-label="Teléfono Trabajo" />
-              <q-input class="no-margin no-padding" color="secondary" v-model="form.private_phone" float-label="Teléfono Privado" />
-              <q-input class="no-margin no-padding" color="secondary" type="textarea" v-model="form.observations" float-label="Observaciones" />
+              <q-input clearable class="no-margin no-padding" color="secondary" v-model="form.name" float-label="*Nombre" />
+              <q-input clearable class="no-margin no-padding" color="secondary" v-model="form.dni" float-label="# Identificación" />
+              <q-input clearable class="no-margin no-padding" color="secondary" v-model="form.work_phone" float-label="Teléfono Trabajo" />
+              <q-input clearable class="no-margin no-padding" color="secondary" v-model="form.private_phone" float-label="Teléfono Privado" />
+              <q-input clearable class="no-margin no-padding" color="secondary" type="textarea" v-model="form.observations" float-label="Observaciones" />
             </q-list>
-          </div>
+       
         </div>
       </q-modal>
-    </div>
+ 
   </div>
 </template>
 
