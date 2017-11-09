@@ -108,6 +108,9 @@
                    <template v-if="transaction_type=='po'">
                 <poReport  :path="path" :kmodule="transaction_type"></poReport>
                </template>
+                 <template v-if="transaction_type=='remision'">
+                <remisionReport  :path="path" :kmodule="transaction_type"></remisionReport>
+               </template>
             </q-tab-pane>
         </q-tabs>
 
@@ -128,8 +131,7 @@ import {
   QTab,
   QTabs,
   QTabPane,
-  QSelect,
-  QIcon
+  QSelect
 } from "quasar-framework";
 
 import axios from "axios";
@@ -141,6 +143,7 @@ import debitNoteReport from "./reports/debit_note.vue";
 import estimateReport from "./reports/estimate.vue";
 import invoiceReport from "./reports/invoice.vue";
 import poReport from "./reports/purchase_order.vue";
+import remisionReport from "./reports/remision.vue";
 import kToolbar from "../../components/Toolbar.vue";
 
 export default {
@@ -166,7 +169,7 @@ export default {
     invoiceReport,
     poReport,
     kToolbar,
-    QIcon
+    remisionReport
     //kDatatable
   },
   data() {

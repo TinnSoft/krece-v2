@@ -9,7 +9,7 @@
                     A continuación puedes cambiar el consecutivo de la numeración para cada uno de los documentos creados
                 </div>
 
-                <q-field v-for="item in form" :key="item">
+                <q-field v-for="(item, index) in form" :key="index">
                     <q-input class="no-margin no-padding" color="green" type="number" v-model="item.number" :float-label="item.text" />
 
                 </q-field>
