@@ -84,7 +84,28 @@
             </q-tab-pane>
             <q-tab-pane name="report">
                 <q-select color="secondary" float-label="Seleccione un reporte" v-model="transaction_type" :options="listOptions" @change="handleChange" />
-                <kDatatable ref="__transactions" :path="path" :kmodule="transaction_type"></kDatatable>
+                <!--<kDatatable ref="__transactions" :path="path" :kmodule="transaction_type"></kDatatable>-->
+               <template v-if="transaction_type=='payment'">
+                <paymentReport :path="path" :kmodule="transaction_type"></paymentReport>
+               </template>
+               <template v-if="transaction_type=='bill'">
+                <billReport  :path="path" :kmodule="transaction_type"></billReport>
+               </template>
+                 <template v-if="transaction_type=='credit_note'">
+                <creditNoteReport  :path="path" :kmodule="transaction_type"></creditNoteReport>
+               </template>
+                 <template v-if="transaction_type=='debit_note'">
+                <debitNoteReport  :path="path" :kmodule="transaction_type"></debitNoteReport>
+               </template>
+                <template v-if="transaction_type=='estimate'">
+                <estimateReport  :path="path" :kmodule="transaction_type"></estimateReport>
+               </template>
+                 <template v-if="transaction_type=='invoice'">
+                <invoiceReport  :path="path" :kmodule="transaction_type"></invoiceReport>
+               </template>
+                   <template v-if="transaction_type=='po'">
+                <poReport  :path="path" :kmodule="transaction_type"></poReport>
+               </template>
             </q-tab-pane>
         </q-tabs>
 
@@ -93,7 +114,35 @@
 
 <script>
 import {
+  QList,
+  QListHeader,
+  QItem,
+  QItemSeparator,
+  QItemSide,
+  QItemMain,
+  QItemTile,
+  QCollapsible,
+  QRadio,
+  QTab,
+  QTabs,
+  QTabPane,
+  QSelect
+} from "quasar-framework";
+
+import axios from "axios";
+//import kDatatable from '../../components/tables/Datatable-Index_transactions.vue'
+import paymentReport from "./reports/payment.vue";
+import billReport from "./reports/bill.vue";
+import creditNoteReport from "./reports/credit_note.vue";
+import debitNoteReport from "./reports/debit_note.vue";
+import estimateReport from "./reports/estimate.vue";
+import invoiceReport from "./reports/invoice.vue";
+import poReport from "./reports/purchase_order.vue";
+
+export default {
+  components: {
     QList,
+    QSelect,
     QListHeader,
     QItem,
     QItemSeparator,
@@ -103,117 +152,104 @@ import {
     QCollapsible,
     QRadio,
     QTab,
-    QTabs, QTabPane, QSelect
-} from 'quasar-framework'
-
-import axios from 'axios'
-import kDatatable from '../../components/tables/Datatable-Index_transactions.vue'
-
-export default {
-    components: {
-        QList, QSelect,
-        QListHeader,
-        QItem,
-        QItemSeparator,
-        QItemSide,
-        QItemMain,
-        QItemTile,
-        QCollapsible,
-        QRadio,
-        QTab,
-        QTabs, QTabPane, kDatatable
-    },
-    data() {
-        return {
-            listOptions: [
-                {
-                    label: 'Pagos',
-                    icon: 'show_chart',
-                    value: 'payment'
-                },
-                {
-                    label: 'Facturas de venta',
-                    icon: 'show_chart',
-                    value: 'invoice'
-                },
-                {
-                    label: 'Notas de crédito',
-                    icon: 'show_chart',
-                    value: 'credit_note'
-                },
-                {
-                    label: 'Cotizaciones',
-                    icon: 'show_chart',
-                    value: 'estimate'
-                },
-                {
-                    label: 'Facturas de compra',
-                    icon: 'attach_money',
-                    value: 'bill'
-                },
-                {
-                    label: 'Notas débito',
-                    icon: 'attach_money',
-                    value: 'debit_note'
-                },
-                {
-                    label: 'Remisiones',
-                    icon: 'attach_money',
-                    value: 'remision'
-                },
-                {
-                    label: 'Ordenes de Compra',
-                    icon: 'attach_money',
-                    value: 'po'
-                }
-            ],
-            form: {},
-            isProcessing: false,
-            transaction_type: 'payment',
-            pathFetchData: `contact/${this.$route.params.id}`,
-            modulename: 'payment',
-            warningmessage: 'Estas a punto de eliminar la Factura de venta # '
+    QTabs,
+    QTabPane,
+    paymentReport,
+    billReport,
+    creditNoteReport,
+    debitNoteReport,
+    estimateReport,
+    invoiceReport,
+    poReport
+    //kDatatable
+  },
+  data() {
+    return {
+      listOptions: [
+        {
+          label: "Pagos",
+          icon: "show_chart",
+          value: "payment"
+        },
+        {
+          label: "Facturas de venta",
+          icon: "show_chart",
+          value: "invoice"
+        },
+        {
+          label: "Notas de crédito",
+          icon: "show_chart",
+          value: "credit_note"
+        },
+        {
+          label: "Cotizaciones",
+          icon: "show_chart",
+          value: "estimate"
+        },
+        {
+          label: "Facturas de compra",
+          icon: "attach_money",
+          value: "bill"
+        },
+        {
+          label: "Notas débito",
+          icon: "attach_money",
+          value: "debit_note"
+        },
+        {
+          label: "Remisiones",
+          icon: "attach_money",
+          value: "remision"
+        },
+        {
+          label: "Ordenes de Compra",
+          icon: "attach_money",
+          value: "po"
         }
+      ],
+      form: {},
+      isProcessing: false,
+      transaction_type: "payment",
+      pathFetchData: `contact/${this.$route.params.id}`,
+      modulename: "payment",
+      warningmessage: "Estas a punto de eliminar la Factura de venta # "
+    };
+  },
+  created() {
+    this.fetchData();
+  },
+  computed: {
+    transactiontype() {
+      return this.transaction_type;
     },
-    created() {
-        this.fetchData();
+    list_price() {
+      if (this.form.list_price) {
+        return this.form.list_price.name;
+      }
+      return "";
     },
-    computed: {
-        transactiontype() {
-            return this.transaction_type;
-        },
-        list_price() {
-
-            if (this.form.list_price) {
-                return this.form.list_price.name;
-            }
-            return ''
-        },
-        path() {
-            return `getContactReports/${this.transaction_type}/${this.$route.params.id}`
-        }
-    },
-    methods: {
-        handleChange(val) {
-            // console.log('cambio handle',val)
-            this.transaction_type = val;
-            this.$refs['__transactions'].refreshInBackground(val, this.$route.params.id);
-        },
-        fetchData() {
-            var vm = this;
-            vm.isProcessing = true;
-            axios.get(`/api/${vm.pathFetchData}`)
-                .then(function(response) {
-                    vm.$set(vm, 'form', response.data.model)
-                    vm.isProcessing = false;
-                })
-                .catch(function(error) {
-                    vm.isProcessing = false;
-                })
-
-
-
-        },
+    path() {
+      return `getContactReports/${this.transaction_type}/${this.$route.params
+        .id}`;
     }
-}
+  },
+  methods: {
+    handleChange(val) {
+      this.transaction_type = val;
+    },
+    fetchData() {
+      var vm = this;
+      vm.isProcessing = true;
+      axios
+        .get(`/api/${vm.pathFetchData}`)
+        .then(function(response) {
+          vm.$set(vm, "form", response.data.model);
+          vm.isProcessing = false;
+        })
+        .catch(function(error) {
+          vm.isProcessing = false;
+        });
+    }
+  }
+};
 </script>

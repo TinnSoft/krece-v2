@@ -11,7 +11,7 @@
                 </thead>
                 <tbody>
                     <tr v-for="(item ,index)  in (arrayTreeObj)" :key="index" >
-                        <td  @click="toggle(item, index)" >
+                        <td data-th="NOMBRE" @click="toggle(item, index)" >
                         
                             <span class="q-tree-link q-tree-label" v-bind:style="setPadding(item)" >                
                                  <q-icon  style="cursor: pointer;" :name="iconName(item)" color="secondary"  />
@@ -19,9 +19,9 @@
                             </span>
                         
                         </td>
-                        <td>{{item.description}}</td>
-                        <td>{{item.niif_account}} </td>
-                        <td> 
+                        <td data-th="DESCRIPCIÓN">{{item.description}}</td>
+                        <td data-th="CUENTA NIIF">{{item.niif_account}} </td>
+                        <td data-th="ACCIONES"> 
                         <kButton color="secondary" iconname="add_circle" tooltiplabel="Agregar Categoría" @click="edit(cell)"></kButton>
                          <kButton  v-if="item.isEditable==true" color="secondary"   iconname="edit" tooltiplabel="Editar" @click="edit(cell)"></kButton>
                         <kButton v-if="item.isEditable==true" color="red"  iconname="delete" tooltiplabel="Eliminar Categoría" @click="deleteRow(cell)"></kButton>                        
