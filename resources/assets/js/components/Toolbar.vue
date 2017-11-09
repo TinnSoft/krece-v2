@@ -3,10 +3,10 @@
         <q-toolbar inverted color="green">
             <q-toolbar-title>
                 <h6 class="mobile-only">
-                    <b>{{toolbarlabel}} {{documentId}}</b>
+                    <b>{{cToolbarLabel}} {{documentId}}</b>
                 </h6>
                 <h5 class="desktop-only">
-                    <b>{{toolbarlabel}} {{documentId}}</b>
+                    <b>{{cToolbarLabel}} {{documentId}}</b>
                 </h5>
             </q-toolbar-title>
             <div class="desktop-only">
@@ -31,46 +31,70 @@
     </div>
 </template>
 <script type="text/javascript">
-
-import { QToolbar,QToolbarTitle, QBtn, QItemSeparator, QTooltip, QIcon } from 'quasar-framework'
+import {
+  QToolbar,
+  QToolbarTitle,
+  QBtn,
+  QItemSeparator,
+  QTooltip,
+  QIcon
+} from "quasar-framework";
 
 export default {
-      data() {
-        return {
-            styleButton: {
-                border: 1,
-                padding: 1
-            }
+  data() {
+    return {
+      styleButton: {
+        border: 1,
+        padding: 1
+      }
+    };
+  },
+  props: {
+    toolbarlabel: {},
+    documentId: {},
+    redirectTo: {},
+    label1: {
+      default: "REGRESAR"
+    },
+    icon1: {
+      default: "keyboard_arrow_left"
+    },
+    label2: {
+      default: "GUARDAR"
+    },
+    icon2: {
+      default: "add"
+    },
+    showbackButton: {
+      default: true
+    },
+    showsaveButton: {
+      default: true
+    }
+  },
+  components: {
+    QToolbar,
+    QToolbarTitle,
+    QBtn,
+    QItemSeparator,
+    QTooltip,
+    QIcon
+  },
+  computed: {
+    cToolbarLabel() {
+        try{
+            return this.toolbarlabel.toUpperCase();
         }
-    },
-      props: {
-        toolbarlabel: {},
-        documentId: {},
-        redirectTo: {},
-        label1: {
-            default: 'REGRESAR'
-        },
-         icon1: {
-            default: 'keyboard_arrow_left'
-        },
-        label2: {
-            default: 'GUARDAR'
-        },
-        icon2: {
-            default: 'add'
-        },
-        showbackButton: {
-            default: true
-        },
-         showsaveButton: {
-            default: true
-        },
-    },
-    components: { QToolbar,QToolbarTitle, QBtn, QItemSeparator, QTooltip,QIcon },
-    methods: {
-        handleClick(newVal) {           
-            this.$emit('click', newVal)
+        catch(e){
+            return null;
         }
-    },
-}
+      
+    }
+  },
+  methods: {
+    handleClick(newVal) {
+      this.$emit("click", newVal);
+    }
+  }
+};
 </script>

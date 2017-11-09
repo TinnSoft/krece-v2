@@ -1,7 +1,9 @@
 <template>
     <div class="layout-padding docs-tab ">
+       <kToolbar :toolbarlabel="form.name" :showsaveButton="false" :redirectTo="`${redirect}`" 
+        ></kToolbar>  
 
-        <q-tabs color="grey-2" align="justify" inverted>
+          <q-tabs color="grey-2" align="justify" inverted>
             <q-tab default color="grey-6" name="info" slot="title" icon="people" label="Acerca de" />
             <q-tab color="grey-6" name="report" slot="title" icon="pie_chart" label="Movimientos" />
             <q-tab-pane name="info">
@@ -126,7 +128,8 @@ import {
   QTab,
   QTabs,
   QTabPane,
-  QSelect
+  QSelect,
+  QIcon
 } from "quasar-framework";
 
 import axios from "axios";
@@ -138,6 +141,7 @@ import debitNoteReport from "./reports/debit_note.vue";
 import estimateReport from "./reports/estimate.vue";
 import invoiceReport from "./reports/invoice.vue";
 import poReport from "./reports/purchase_order.vue";
+import kToolbar from "../../components/Toolbar.vue";
 
 export default {
   components: {
@@ -160,11 +164,14 @@ export default {
     debitNoteReport,
     estimateReport,
     invoiceReport,
-    poReport
+    poReport,
+    kToolbar,
+    QIcon
     //kDatatable
   },
   data() {
     return {
+      redirect: "/contact",
       listOptions: [
         {
           label: "Pagos",
