@@ -135,7 +135,6 @@ import {
 } from "quasar-framework";
 
 import axios from "axios";
-//import kDatatable from '../../components/tables/Datatable-Index_transactions.vue'
 import paymentReport from "./reports/payment.vue";
 import billReport from "./reports/bill.vue";
 import creditNoteReport from "./reports/credit_note.vue";
@@ -170,7 +169,6 @@ export default {
     poReport,
     kToolbar,
     remisionReport
-    //kDatatable
   },
   data() {
     return {
