@@ -137,7 +137,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     //Inventory
     Route::resource('inventory', 'InventoryController');
     Route::get('getInventorylist','InventoryController@InventoryIndex');
-    Route::get('inventory/getInventoryReports/{process_type}/{product_id}', 'InventoryController@getInventoryReports');
+    Route::get('getInventoryReports/{process_type}/{product_id}', 'InventoryController@getInventoryReports');
 
 
     //enviar documentos adjuntos por correos

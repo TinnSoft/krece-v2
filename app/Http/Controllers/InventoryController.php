@@ -36,7 +36,7 @@ class InventoryController extends Controller
        $products = Product::where('account_id',  Auth::user()->account_id)
                 ->where('isDeleted',  0)
                 ->orderBy('public_id', 'desc')
-                ->select( 'name','reference','sale_price','description','isActive','public_id','tax_id','category_id','id'
+                ->select( 'name','reference','sale_price','description','isActive','public_id','tax_id','category_id','id','list_price_id'
                )->get();    
 
                return response()
@@ -153,7 +153,7 @@ class InventoryController extends Controller
                 ->where('public_id',  $id)
                 ->where('isDeleted',  0)
                 ->orderBy('created_at', 'desc')
-                ->select( 'id','name','reference','sale_price','description','tax_id','public_id','inv_type_id',
+                ->select( 'id','name','reference','sale_price','description','tax_id','public_id','inv_type_id','list_price_id',
                 'inv_unit_cost','inv_inStock','inv_quantity_initial','isActive','inv_quantity_actual','category_id'
                 )->first();  
     }
@@ -172,7 +172,11 @@ class InventoryController extends Controller
           return redirect('/inventory')->with($notification);
         }
       
-        return view('inventory.show', compact('products'));
+         
+        return response()
+        ->json([
+            'model' => $products,
+        ]);
     }
 
     public function edit($id)
@@ -188,8 +192,21 @@ class InventoryController extends Controller
             );
           return redirect('/inventory')->with($notification);
         }
- 
-         return view('inventory.edit', compact('products'));
+
+        if ( $products['inv_inStock']==1)
+        {
+             $products['inv_inStock'] =true;
+        }
+        else if( $products['inv_inStock']==0)
+        {
+             $products['inv_inStock'] =false;
+        }
+        
+        return response()
+        ->json([
+            'form' =>  $products,
+            'base' => $this->BaseInfo()
+        ]);
          
     }
 

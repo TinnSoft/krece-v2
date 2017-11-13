@@ -30,7 +30,7 @@ export default {
       axios
         .get(`/api/${path}`)
         .then(function(response) {
-          console.log("responde desde:", response.data);
+          //console.log("responde desde:", response.data);
           vm.$set(vm, "table", response.data);
         })
         .catch(function(error) {

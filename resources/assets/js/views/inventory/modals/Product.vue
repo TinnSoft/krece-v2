@@ -41,18 +41,27 @@
               <div class="row" >
                 <div class="col-sm-5">
                   <q-list style="border: 0;padding: 0">
-                    <q-input clearable class="no-margin no-padding" :color="themeColor" v-model="form.name" float-label="*Nombre" />
+
+                    <q-field :error="checkIfFieldHasError(errors,'name')" error-label="Este campo es obligatorio">
+                            <q-input clearable class="no-margin no-padding" :color="themeColor" v-model="form.name" float-label="*Nombre" />
+                        </q-field>
+
+                    
                     <q-input clearable class="no-margin no-padding"  :color="themeColor" v-model="form.reference" float-label="Referencia" />
                     <q-input clearable class="no-margin no-padding"  :color="themeColor" v-model="form.description" float-label="Descripción" />
-                    <q-input clearable type="number"  prefix="$"  class="no-margin no-padding"  :color="themeColor" v-model="form.sale_price" float-label="*Precio de venta" />
-                    <q-select filter autofocus-filter filter-placeholder="Buscar" clearable class="no-margin no-padding" :options="base.listPrice"  :color="themeColor" v-model="form.list_price" float-label="Lista de Precios" />                    
+                     <q-field :error="checkIfFieldHasError(errors,'sale_price')" error-label="Este campo es obligatorio">
+                        <q-input clearable type="number"  prefix="$"  class="no-margin no-padding"  :color="themeColor" v-model="form.sale_price" float-label="*Precio de venta" />
+                     </q-field>
+                    <q-select filter autofocus-filter filter-placeholder="Buscar" clearable class="no-margin no-padding" :options="base.listPrice"  :color="themeColor" v-model="form.list_price_id" float-label="Lista de Precios" />                    
                   </q-list>
                 </div>
                 <div class="col-sm-2">
                 </div>
                 <div class="col-sm-5">
                   <q-list style="border: 0;padding: 0">
-                    <q-select filter autofocus-filter filter-placeholder="Buscar" clearable class="no-margin no-padding" :options="base.taxes"  :color="themeColor" v-model="form.tax" float-label="*Impuesto" />                    
+                    <q-field :error="checkIfFieldHasError(errors,'tax_id')" error-label="Este campo es obligatorio">
+                     <q-select filter autofocus-filter filter-placeholder="Buscar" clearable class="no-margin no-padding" :options="base.taxes"  :color="themeColor" v-model="form.tax_id" float-label="*Impuesto" />                    
+                    </q-field>
                     <br>
                     <q-checkbox  :color="themeColor" v-model="form.inv_inStock" label="Ítem inventariable?">
                       <q-tooltip anchor="top middle" self="bottom middle" :offset="[10, 10]">
@@ -67,9 +76,15 @@
                           label="DETALLE"
                           error-label="Estos campos son obligatorios"
                         >
-                          <q-select filter autofocus-filter filter-placeholder="Buscar" clearable class="no-margin no-padding" :options="base.measureUnit"  :color="themeColor" v-model="form.measure_unit" float-label="*Unidad de Medida" />    
+                        <q-field :error="checkIfFieldHasError(errors,'inv_type_id')" error-label="Este campo es obligatorio">
+                          <q-select filter autofocus-filter filter-placeholder="Buscar" clearable class="no-margin no-padding" :options="base.measureUnit"  :color="themeColor" v-model="form.inv_type_id" float-label="*Unidad de Medida" />    
+                        </q-field>
+                          <q-field :error="checkIfFieldHasError(errors,'inv_quantity_initial')" error-label="Este campo es obligatorio">
                           <q-input clearable type="number" class="no-margin no-padding"  :color="themeColor" v-model="form.inv_quantity_initial" float-label="*Cantidad Inicial" />    
+                          </q-field>
+                          <q-field :error="checkIfFieldHasError(errors,'inv_unit_cost')" error-label="Este campo es obligatorio">
                           <q-input clearable type="number" prefix="$" class="no-margin no-padding"  :color="themeColor" v-model="form.inv_unit_cost" float-label="*Precio de Compra" /> 
+                          </q-field>
                     </q-field>
 
                       
@@ -87,12 +102,13 @@
               Esto ayudará a que la herramienta te genere los reportes de una manera más precisa.
             </small>
           </blockquote>
-               <treetable :route="pathCatehory"/>    
-
+          <q-field :error="checkIfFieldHasError(errors,'category_id')" error-label="Seleccione una categoría">
+               <treetable :route="pathCatehory" @click="handleClick" :selectedIDRow="form.category_id"/>    
+          </q-field>
             </div>
 
            <q-inner-loading :visible="isProcessing">
-            <q-spinner-mat size="50px" color="teal-4" />Espere por favor...
+            <q-spinner-mat size="50px" color="teal-4" />{{spinnerText}}
           </q-inner-loading>
     
       </q-modal>
@@ -104,19 +120,10 @@
 <script>
 import {
   QModal,
-  QSpinner,
-  QItem,
   Toast,
-  QItemSeparator,
-  QTabs,
-  QTab,
-  QTabPane,
   QSelect,
   QCheckbox,
   QTooltip,
-  QItemSide,
-  QItemMain,
-  QItemTile,
   QBtn,
   QIcon,
   QList,
@@ -124,21 +131,20 @@ import {
   QToolbar,
   QToolbarTitle,
   QField,
-  QDataTable,
   QFixedPosition,
   QAlert,
   QInnerLoading,
-  QSpinnerMat,
-  QLayout
+  QSpinnerMat
 } from "quasar-framework";
 
 import treetable from "../../../components/treeTable/TreeTable.vue";
 import axios from "axios";
-import kButton from "../../../components/tables/Button.vue";
 
 export default {
   data() {
     return {
+      spinnerText: "Cargando...",
+      errors: null,
       themeColor: "secondary",
       editIdAssociate: null,
       isEditActive: false,
@@ -146,7 +152,7 @@ export default {
       kindOfProcess: "create",
       error: false,
       toolbarLabel: "NUEVO ÍTEM",
-      model: "product",
+      model: "inventory",
       form: { inv_inStock: false },
       base: {
         measureUnit: [
@@ -258,100 +264,29 @@ export default {
   },
   components: {
     QModal,
-    QSpinner,
-    QItem,
     Toast,
-    QItemSeparator,
-    QTabs,
-    QTab,
-    QTabPane,
     QSelect,
     QCheckbox,
     QTooltip,
-    QItemSide,
-    QItemMain,
-    QItemTile,
     QBtn,
     QIcon,
     QList,
     QInput,
     QToolbar,
     QToolbarTitle,
-    kButton,
     QField,
-    QDataTable,
     QFixedPosition,
     QAlert,
     QInnerLoading,
     QSpinnerMat,
-    QLayout,
     treetable
   },
   methods: {
-    cancelUpdateAssociate() {
-      var vm = this;
-      vm.isEditActive = false;
-      vm.contact_others.id = "";
-      vm.contact_others.name = "";
-      vm.contact_others.last_name = "";
-      vm.contact_others.email = "";
-      vm.contact_others.phone = "";
-      vm.contact_others.phone_mobile = "";
-      vm.contact_others.notify = false;
-    },
-    updateAssociate() {
-      let vm = this;
-
-      if (vm.editIdAssociate >= 0) {
-        vm.form.contact_others[vm.editIdAssociate].name =
-          vm.contact_others.name;
-        vm.form.contact_others[vm.editIdAssociate].last_name =
-          vm.contact_others.last_name;
-        vm.form.contact_others[vm.editIdAssociate].email =
-          vm.contact_others.email;
-        vm.form.contact_others[vm.editIdAssociate].phone =
-          vm.contact_others.phone;
-        vm.form.contact_others[vm.editIdAssociate].phone_mobile =
-          vm.contact_others.phone_mobile;
-        vm.form.contact_others[vm.editIdAssociate].notify =
-          vm.contact_others.notify;
-        vm.editIdAssociate = null;
-        this.cancelUpdateAssociate();
-      }
-      vm.isEditActive = false;
-    },
-    editAssociate(val) {
-      var vm = this;
-      vm.isEditActive = true;
-      vm.editIdAssociate = val.row.__index;
-
-      vm.contact_others.name = val.row.name;
-      vm.contact_others.last_name = val.row.last_name;
-      vm.contact_others.email = val.row.email;
-      vm.contact_others.phone = val.row.phone;
-      vm.contact_others.phone_mobile = val.row.phone_mobile;
-      vm.contact_others.notify = val.row.notify;
-    },
-    deleteAssociate(val) {
-      this.form.contact_others.splice(val.row.__index, 1);
+    handleClick(row) {
+      this.form.category_id = row.id;
     },
     handleClose(newVal) {
       this.$emit("close", newVal);
-    },
-    associateContact() {
-      var vm = this;
-
-      vm.form.contact_others.push({
-        name: vm.contact_others.name,
-        last_name: vm.contact_others.last_name,
-        email: vm.contact_others.email,
-        phone: vm.contact_others.phone,
-        phone_mobile: vm.contact_others.phone_mobile,
-        notify: vm.contact_others.notify
-      });
-    },
-    errors() {
-      return this.$store.getters.errors;
     },
     checkIfFieldHasError(error, field) {
       try {
@@ -364,11 +299,12 @@ export default {
     },
     fetchData() {
       var vm = this;
+      vm.spinnerText = "Cargando...";
       vm.isProcessing = true;
       axios
         .get(vm.pathFetchData)
         .then(function(response) {
-          //console.log(response.data.base);
+         // console.log(response.data.form);
           vm.$set(vm.$data, "form", response.data.form);
           vm.$set(vm.$data.base, "taxes", response.data.base.taxes);
           vm.$set(vm.$data.base, "listPrice", response.data.base.listprice);
@@ -388,40 +324,50 @@ export default {
     //kindOfProcess= create/edit
     //customerId= (opcional) id del producto cuando se edita
     open(kindOfProcess, customerId) {
-      this.isEditActive = false;
-      this.kindOfProcess = kindOfProcess;
+      let vm=this;
+      vm.isEditActive = false;
+      vm.kindOfProcess = kindOfProcess;
+      vm.category_id=null;
+     
       if (kindOfProcess === "edit") {
-        this.pathFetchData = `/api/inventory/${customerId}/edit`;
-        this.toolbarLabel = "EDITAR ÍTEM";
+        vm.pathFetchData = `/api/${vm.model}/${customerId}/${kindOfProcess}`;
+        vm.toolbarLabel = "EDITAR ÍTEM";
       } else {
-        this.pathFetchData = "/api/inventory/create";
-        this.toolbarLabel = "NUEVO ÍTEM";
+        vm.pathFetchData = `/api/${vm.model}/${kindOfProcess}`;
+        vm.toolbarLabel = "NUEVO ÍTEM";
       }
 
-      this.fetchData();
+      vm.fetchData();
 
-      this.$refs["productModal"].open();
+      vm.$refs["productModal"].open();
     },
 
     submit() {
       if (this.kindOfProcess === "edit") {
+        this.spinnerText = "Actualizando...";
         this.update();
       } else {
+        this.spinnerText = "Guardando...";
         this.create();
       }
     },
     create() {
       var vm = this;
+      vm.$set(vm.$data, "errors", null);
       vm.isProcessing = true;
       axios
         .post(`/api/${vm.model}`, vm.form)
         .then(function(response) {
+          //console.log("creadooo");
           if (response.data.created) {
-            Toast.create.positive("Se guardó el registro satisfactoriamente");
+            Toast.create.positive("El registro se creó satisfactoriamente");
           }
           vm.isProcessing = false;
+          vm.$refs["productModal"].close();
         })
         .catch(function(error) {
+          // console.log("error", error.response.data);
+          vm.$set(vm.$data, "errors", error.response.data);
           vm.isProcessing = false;
           Toast.create.negative(
             "Ooops! No fue posible guardar el registro actual, intente de nuevo."
@@ -431,9 +377,11 @@ export default {
 
     update() {
       var vm = this;
+      vm.errors = null;
       vm.isProcessing = true;
+     
       axios
-        .put("/api/contact/" + vm.form.id, vm.form)
+        .put(`/api/${vm.model}/${vm.form.id}`, vm.form)
         .then(function(response) {
           if (response.data.updated) {
             Toast.create.positive(
@@ -443,6 +391,7 @@ export default {
           vm.isProcessing = false;
         })
         .catch(function(error) {
+          vm.errors = error.response.data;
           vm.isProcessing = false;
           Toast.create.negative(
             "No fue posible actualizar el registro actual, intente de nuevo."

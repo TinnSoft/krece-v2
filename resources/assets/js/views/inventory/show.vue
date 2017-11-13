@@ -4,80 +4,83 @@
         ></kToolbar>  
 
           <q-tabs color="grey-2" align="justify" inverted>
-            <q-tab default color="grey-6" name="info" slot="title" icon="people" label="Acerca de" />
+            <q-tab default color="grey-6" name="info" slot="title" icon="local_mall" label="Acerca de" />
             <q-tab color="grey-6" name="report" slot="title" icon="pie_chart" label="Movimientos" />
             <q-tab-pane name="info">
                 <q-list>
-                    <q-collapsible icon="perm_identity" label="<strong>General</strong>" sublabel="información básica del contacto" opened>
+                    <q-collapsible icon="local_grocery_store" label="<strong>General</strong>" sublabel="información básica del ítem" opened>
                         <div>
                             <q-item>
-                                <q-item-side icon="perm_identity" color="light" />
+                                <q-item-side icon="assignment" color="light" />
                                 <q-item-main>
-                                    <q-item-tile label>{{form.name}}</q-item-tile>
-                                    <q-item-tile sublabel>Nombre</q-item-tile>
+                                    <q-item-tile label>{{form.description}}</q-item-tile>
+                                    <q-item-tile sublabel>Descripción</q-item-tile>
                                 </q-item-main>
                             </q-item>
                             <q-item>
                                 <q-item-main inset>
-                                    <q-item-tile label>{{form.nit}}</q-item-tile>
-                                    <q-item-tile sublabel>Nit</q-item-tile>
+                                    <q-item-tile label>{{form.reference}}</q-item-tile>
+                                    <q-item-tile sublabel>Referencia</q-item-tile>
                                 </q-item-main>
                             </q-item>
-                            <q-item>
-                                <q-item-side icon="location_city" color="light" />
-                                <q-item-main inset>
-                                    <q-item-tile label>{{form.city}}</q-item-tile>
-                                    <q-item-tile sublabel>Ciudad</q-item-tile>
-                                </q-item-main>
-                            </q-item>
-                            <q-item>
-                                <q-item-side icon="email" color="light" />
-                                <q-item-main inset>
-                                    <q-item-tile label>{{form.email}}</q-item-tile>
-                                    <q-item-tile sublabel>Correo Electrónico</q-item-tile>
-                                </q-item-main>
-                            </q-item>
-                        </div>
-                    </q-collapsible>
-                    <q-collapsible icon="phone" label="<strong>Teléfonos</strong>" sublabel="Números de contacto">
-                        <div>
-                            <q-item>
-                                <q-item-side icon="phone" color="light" />
-                                <q-item-main inset>
-                                    <q-item-tile label>{{form.phone1}}</q-item-tile>
-                                    <q-item-tile sublabel>Teléfono</q-item-tile>
-                                </q-item-main>
-                            </q-item>
-                            <q-item>
-                                <q-item-side icon="phone" color="light" />
-                                <q-item-main>
-                                    <q-item-tile label>{{form.phone2}}</q-item-tile>
-                                    <q-item-tile sublabel>Teléfono 2</q-item-tile>
-                                </q-item-main>
-                            </q-item>
-                            <q-item>
-                                <q-item-side icon="smartphone" color="light" />
-                                <q-item-main inset>
-                                    <q-item-tile label>{{form.phone_mobile}}</q-item-tile>
-                                    <q-item-tile sublabel>Celular</q-item-tile>
-                                </q-item-main>
-                            </q-item>
-                        </div>
-                    </q-collapsible>
-                    <q-collapsible icon="info_outline" label="<strong>Otros</strong>" sublabel="información adicional del contacto">
-                        <div>
                             <q-item>
                                 <q-item-side icon="attach_money" color="light" />
-                                <q-item-main>
-                                    <q-item-tile label>{{list_price}}</q-item-tile>
+                                <q-item-main inset>
+                                    <q-item-tile label>{{form.sale_price}}</q-item-tile>
+                                    <q-item-tile sublabel>Precio de venta</q-item-tile>
+                                </q-item-main>
+                            </q-item>
+                            <q-item>
+                                <q-item-side icon="attach_money" color="light" />
+                                <q-item-main inset>
+                                    <q-item-tile label>{{form.inv_unit_cost}}</q-item-tile>
+                                    <q-item-tile sublabel>Precio de Compra</q-item-tile>
+                                </q-item-main>
+                            </q-item>
+                              <q-item>
+                                <q-item-side icon="play_for_work" color="light" />
+                                <q-item-main inset>
+                                    <q-item-tile label>{{getNameValue(form.category)}}</q-item-tile>
+                                    <q-item-tile sublabel>Categoría</q-item-tile>
+                                </q-item-main>
+                            </q-item>
+                             <q-item>
+                                <q-item-side icon="view_list" color="light" />
+                                <q-item-main inset>
+                                    <q-item-tile label>{{getNameValue(form.list_price)}}</q-item-tile>
                                     <q-item-tile sublabel>Lista de Precios</q-item-tile>
                                 </q-item-main>
                             </q-item>
+                        </div>
+                    </q-collapsible>                   
+                    <q-collapsible icon="more_horiz" label="<strong>Otros</strong>" sublabel="información adicional del ítem">
+                        <div>
                             <q-item>
-                                <q-item-side icon="note" color="light" />
+                                <q-item-side icon="assignment" color="light" />
+                                <q-item-main>
+                                    <q-item-tile label>{{measureUnit}}</q-item-tile>
+                                    <q-item-tile sublabel>Unidad de Medida</q-item-tile>
+                                </q-item-main>
+                            </q-item>
+                            <q-item>
+                                <q-item-side icon="equalizer" color="light" />
                                 <q-item-main inset>
-                                    <q-item-tile label>{{form.observation}}</q-item-tile>
-                                    <q-item-tile sublabel>Observaciones</q-item-tile>
+                                    <q-item-tile label>{{form.inv_quantity_initial}}</q-item-tile>
+                                    <q-item-tile sublabel>Inventario Inicial (Cantidad)</q-item-tile>
+                                </q-item-main>
+                            </q-item>
+                             <q-item>
+                                <q-item-side icon="equalizer" color="light" />
+                                <q-item-main inset>
+                                    <q-item-tile label>{{form.inv_quantity_actual}}</q-item-tile>
+                                    <q-item-tile sublabel>Inventario Actual (Cantidad)</q-item-tile>
+                                </q-item-main>
+                            </q-item>
+                            <q-item>
+                                <q-item-side icon="attach_money" color="light" />
+                                <q-item-main inset>
+                                    <q-item-tile label>{{getNameValue(form.tax)}}</q-item-tile>
+                                    <q-item-tile sublabel>Impuesto</q-item-tile>
                                 </q-item-main>
                             </q-item>
                         </div>
@@ -86,10 +89,7 @@
             </q-tab-pane>
             <q-tab-pane name="report">
                 <q-select color="secondary" float-label="Seleccione un reporte" v-model="transaction_type" :options="listOptions" @change="handleChange" />
-                <!--<kDatatable ref="__transactions" :path="path" :kmodule="transaction_type"></kDatatable>-->
-               <template v-if="transaction_type=='payment'">
-                <paymentReport :path="path" :kmodule="transaction_type"></paymentReport>
-               </template>
+           
                <template v-if="transaction_type=='bill'">
                 <billReport  :path="path" :kmodule="transaction_type"></billReport>
                </template>
@@ -135,7 +135,6 @@ import {
 } from "quasar-framework";
 
 import axios from "axios";
-import paymentReport from "./reports/payment.vue";
 import billReport from "./reports/bill.vue";
 import creditNoteReport from "./reports/credit_note.vue";
 import debitNoteReport from "./reports/debit_note.vue";
@@ -160,7 +159,6 @@ export default {
     QTab,
     QTabs,
     QTabPane,
-    paymentReport,
     billReport,
     creditNoteReport,
     debitNoteReport,
@@ -172,13 +170,8 @@ export default {
   },
   data() {
     return {
-      redirect: "/contact",
+      redirect: "/inventory",
       listOptions: [
-        {
-          label: "Pagos",
-          icon: "show_chart",
-          value: "payment"
-        },
         {
           label: "Facturas de venta",
           icon: "show_chart",
@@ -217,31 +210,38 @@ export default {
       ],
       form: {},
       isProcessing: false,
-      transaction_type: "payment",
-      pathFetchData: `contact/${this.$route.params.id}`,
-      modulename: "payment",
-      warningmessage: "Estas a punto de eliminar la Factura de venta # "
+      transaction_type: "invoice",
+      pathFetchData: `inventory/${this.$route.params.id}`,
+      modulename: "inventory",
+      warningmessage: "Estas a punto de eliminar el producto: "
     };
   },
   created() {
     this.fetchData();
   },
   computed: {
-    transactiontype() {
-      return this.transaction_type;
-    },
-    list_price() {
-      if (this.form.list_price) {
-        return this.form.list_price.name;
+    measureUnit() {
+      try {
+        if (this.form.measure_unit) {
+          return this.form.measure_unit.measure_unit;
+        }
+      } catch ($e) {
+        return null;
       }
-      return "";
     },
     path() {
-      return `getContactReports/${this.transaction_type}/${this.$route.params
+      return `getInventoryReports/${this.transaction_type}/${this.$route.params
         .id}`;
     }
   },
   methods: {
+    getNameValue(val) {
+      try {
+        return val.name;
+      } catch ($e) {
+        return null;
+      }
+    },
     handleChange(val) {
       this.transaction_type = val;
     },
@@ -251,6 +251,7 @@ export default {
       axios
         .get(`/api/${vm.pathFetchData}`)
         .then(function(response) {
+          // console.log(response.data.model)
           vm.$set(vm, "form", response.data.model);
           vm.isProcessing = false;
         })

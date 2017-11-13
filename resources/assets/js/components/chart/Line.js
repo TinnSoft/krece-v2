@@ -12,7 +12,7 @@ export default Line.extend({
   },
   mounted() {
     this.renderChart(this.chartData, this.options)
-    console.log('grafico:', this._chart);
+    //console.log('grafico:', this._chart);
     this._chart.update()
 
   },

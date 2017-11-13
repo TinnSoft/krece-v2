@@ -48,6 +48,10 @@ export default {
     route: {
       type: String,
       default: null
+    },
+    selectedIDRow: {
+      type: Number,
+      default: null
     }
   },
   components: {
@@ -63,6 +67,13 @@ export default {
       itemId: null,
       isExpend: true
     };
+  },
+  watch: {
+    selectedIDRow: function(val) {
+      if (this.selectedRowID != null) {
+        this.$set(this.selectedRowID, "id", val);
+      }
+    }
   },
   computed: {
     arrayTreeObj() {
@@ -160,7 +171,8 @@ export default {
     selectedRow(row, clicked) {
       let vm = this;
       vm.selectedRowID = row;
-      console.log(this.selectedRowID);
+      vm.$emit("click", row);
+      // console.log(vm.selectedRowID);
     }
   },
   created() {

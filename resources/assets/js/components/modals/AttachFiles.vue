@@ -96,7 +96,7 @@ export default {
 
   methods: {
     endUpload(ref) {
-      console.log(ref.testx);
+      //console.log(ref.testx);
       if (ref.testx.files[0].__failed == true) {
         Toast.create.negative(
           "Algo salió mal con la carga del archivo, intente nuevamente"

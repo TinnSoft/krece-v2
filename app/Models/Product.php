@@ -42,7 +42,8 @@ class Product extends Model
             'inv_quantity_initial'=>null,
             'inv_unit_cost'=>0,
             'tax_id'=>null,
-            'inv_inStock'=>false
+            'inv_inStock'=>false,
+            'category_id'=>null
 
         ];
     }
