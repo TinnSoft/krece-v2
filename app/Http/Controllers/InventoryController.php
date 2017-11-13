@@ -30,11 +30,6 @@ class InventoryController extends Controller
         $this->paymentRepo = $paymentRepo;
     }
     
-    
-    public function index()
-    {
-        return view('inventory.index');  
-    }
 
      public function InventoryIndex()
     {
@@ -44,52 +39,38 @@ class InventoryController extends Controller
                 ->select( 'name','reference','sale_price','description','isActive','public_id','tax_id','category_id','id'
                )->get();    
 
-        return response()->json($products);  
+               return response()
+               ->json([
+                   'records' => $products
+               ]);
     }
 
    
     public function BaseInfo()
     {
-   
-        $taxes = Tax::select(DB::raw("CONCAT(name,' (',amount,'%)') as name"),'amount','id')
-       ->where('account_id',  Auth::user()->account_id)
-                ->where('isDeleted',  0)
-               ->orderBy('created_at', 'asc')
-               ->get();
-
-
-        $measure_unit = ProductInventoryType::select('measure_type')
-               ->groupBy('measure_type')
-               ->orderBy('id', 'asc')
-               ->get();
-        
-         $measure=[];
-        
-        foreach($measure_unit as $item) {
-              $measure_type = ProductInventoryType::select('id','measure_unit')
-              ->where('measure_type',  $item->measure_type)
-               ->orderBy('id', 'asc')
-               ->get();
-
-             $measure[] = array(
-                'measure_type' => $item->measure_type, 
-                'measure' =>  $measure_type
-            );
-        }
+    
+        $measure_unit = ProductInventoryType::select('measure_unit  as label','id as value', 'measure_type as stamp')        
+        ->orderBy('id', 'asc')
+        ->get()
+        ->toArray();
         
         $baseInfo=[                
-                'taxes' => $taxes,
-               'measure_unit'=>$measure,
+                'taxes' => Helper::taxes(),
+               'measure_unit'=>$measure_unit,
                'listprice'=>Helper::listPrice()              
             ];
              
-     return response()->json($baseInfo);
+     return $baseInfo;
 
     }
 
     public function create()
     {
-        return view('inventory.create');        
+        return response()
+        ->json([
+            'form' => Product::initialize(),
+            'base' => $this->BaseInfo()
+        ]);
     }
         
     public function store(Request $request)

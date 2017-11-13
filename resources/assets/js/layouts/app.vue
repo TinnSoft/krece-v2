@@ -60,7 +60,7 @@ export default {
         {
           icon: 'local_mall',
           title: 'INVENTARIO',
-          path: '/config2',
+          path: '/inventory',
           type: 'alone'
         },
         {

@@ -31,4 +31,20 @@ class Product extends Model
     {
         return $this->hasOne(Category::class, 'id', 'category_id')->select(array('id', 'name'));
     }
+    public static function initialize()
+    {
+        return [
+			'name'=>null,
+			'description'=>null,
+			'reference'=>null,
+			'sale_price' => 0, 
+            'list_price_id' => null,
+            'inv_quantity_initial'=>null,
+            'inv_unit_cost'=>0,
+            'tax_id'=>null,
+            'inv_inStock'=>false
+
+        ];
+    }
+
 }

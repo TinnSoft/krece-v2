@@ -23,7 +23,7 @@ class CategoryController extends Controller
         $income = Category::where('type_id',  CATEGORY_TYPE_INCOME)
                 ->where('parent_id',"!=",  null)
                 ->CategoryAttributes()              
-                ->get();
+                ->get()->toTree();
 
         return response()->json($income);  
     }

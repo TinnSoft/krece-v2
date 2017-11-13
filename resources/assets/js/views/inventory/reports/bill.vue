@@ -1,17 +1,27 @@
 <template>
-    <q-data-table  :data="dataFinal" :config="config" :columns="columns">
-        <template slot="col-status_id" slot-scope="cell">
-            <Remision_Status :id="cell.row.status_id"></Remision_Status>           
+<div>
+    <q-data-table :data="dataFinal" :config="config" :columns="columns">
+        <template slot="col-status_id" slot-scope="cell">          
+            <BillStatus  :id="cell.row.status_id"></BillStatus>
         </template>
 
     </q-data-table>
+       <q-inner-loading :visible="isProcessing">
+        <q-spinner-mat size="100px" color="teal-4" />Espere por favor...
+    </q-inner-loading>
+</div>
 </template>
 <script type="text/javascript">
-import Remision_Status from "../../../components/status/Remision.vue";
+import BillStatus from "../../../components/status/Bill.vue";
 import Toggle from "../../../components/tables/Toggle.vue";
 import kButton from "../../../components/tables/Button.vue";
 
-import { QDataTable, Dialog } from "quasar-framework";
+import {
+  QDataTable,
+  Dialog,
+  QInnerLoading,
+  QSpinnerMat
+} from "quasar-framework";
 
 import accounting from "accounting";
 import axios from "axios";
@@ -24,22 +34,26 @@ export default {
     QDataTable,
     kButton,
     Toggle,
-    Remision_Status
+    BillStatus,
+    QInnerLoading,
+    QSpinnerMat
   },
-  props: ["path", "kmodule", "model"],
+  props: ["path", "kmodule"],
   methods: {
     fetchData(path) {
       let vm = this;
-
+      vm.isProcessing = true;
       vm.config.messages.noData = "Cargando...";
       axios
         .get(`/api/${path}`)
         .then(function(response) {
-          console.log("responde desde:", response.data);
+          // console.log('responde desde:', response.data)
+          vm.isProcessing = false;
           vm.$set(vm, "table", response.data);
         })
         .catch(function(error) {
-          console.log(error.response);
+          vm.isProcessing = false;
+          //console.log(error.response);
         });
 
       if (vm.table.length === 0) {
@@ -51,7 +65,7 @@ export default {
       let cols = vm.columns;
       cols.clear;
 
-      let colListToApply = remisionColumns();
+      let colListToApply = billColumns();
 
       vm.$set(vm, "columns", colListToApply);
 
@@ -63,6 +77,7 @@ export default {
   },
   data() {
     return {
+      isProcessing: false,
       table: [],
       config: {
         refresh: false,
@@ -106,7 +121,7 @@ export default {
     };
   },
   created() {
-    this.columns = remisionColumns();
+    this.columns = billColumns();
     this.fetchData(this.path);
   },
   computed: {
@@ -146,24 +161,22 @@ export default {
   }
 };
 
-function remisionColumns() {
+function billColumns() {
   return [
     {
       label: "No",
       field: "public_id",
-      width: "40px",
+      width: "45px",
       sort: true,
       filter: true,
       type: "text"
     },
     {
-      label: "Cliente",
+      label: "Proveedor",
       field: "name",
-      sort(a) {
-        return a;
-      },
+      sort: true,
       filter: true,
-      width: "140px",
+      width: "120px",
       type: "string"
     },
     {
@@ -171,7 +184,10 @@ function remisionColumns() {
       field: "date",
       width: "80px",
       sort(a, b) {
-        return new Date(date) - new Date(date);
+        return new Date(a) - new Date(b);
+      },
+      format(value) {
+        return moment(value).fromNow();
       },
       filter: true
     },
@@ -180,7 +196,10 @@ function remisionColumns() {
       field: "due_date",
       width: "80px",
       sort(a, b) {
-        return new Date(a.due_date) - new Date(b.due_date);
+        return new Date(a) - new Date(b);
+      },
+      format(value) {
+        return moment(value).format("MMMM Do YYYY");
       },
       filter: true
     },
@@ -194,6 +213,32 @@ function remisionColumns() {
     {
       label: "Total",
       field: "total",
+      filter: false,
+      sort(t) {
+        return t;
+      },
+      format(value) {
+        return accounting.formatMoney(value);
+      },
+      type: "string",
+      width: "80px"
+    },
+    {
+      label: "Pagado",
+      field: "total_payed",
+      filter: false,
+      sort(t) {
+        return t;
+      },
+      format(value) {
+        return accounting.formatMoney(value);
+      },
+      type: "string",
+      width: "80px"
+    },
+    {
+      label: "Por Pagar",
+      field: "pending_to_pay",
       filter: false,
       sort(t) {
         return t;

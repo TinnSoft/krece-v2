@@ -1,13 +1,9 @@
 <template>
-    <q-data-table  :data="dataFinal" :config="config" :columns="columns">
-        <template slot="col-status_id" slot-scope="cell">
-            <Remision_Status :id="cell.row.status_id"></Remision_Status>           
-        </template>
+    <q-data-table ref="_mainTable" :data="dataFinal" :config="config" :columns="columns" >
 
     </q-data-table>
 </template>
 <script type="text/javascript">
-import Remision_Status from "../../../components/status/Remision.vue";
 import Toggle from "../../../components/tables/Toggle.vue";
 import kButton from "../../../components/tables/Button.vue";
 
@@ -23,10 +19,9 @@ export default {
   components: {
     QDataTable,
     kButton,
-    Toggle,
-    Remision_Status
+    Toggle
   },
-  props: ["path", "kmodule", "model"],
+  props: ["path", "kmodule"],
   methods: {
     fetchData(path) {
       let vm = this;
@@ -35,7 +30,7 @@ export default {
       axios
         .get(`/api/${path}`)
         .then(function(response) {
-          console.log("responde desde:", response.data);
+         // console.log("responde desde:", response.data);
           vm.$set(vm, "table", response.data);
         })
         .catch(function(error) {
@@ -51,7 +46,7 @@ export default {
       let cols = vm.columns;
       cols.clear;
 
-      let colListToApply = remisionColumns();
+      let colListToApply = creditNoteColumns();
 
       vm.$set(vm, "columns", colListToApply);
 
@@ -106,7 +101,7 @@ export default {
     };
   },
   created() {
-    this.columns = remisionColumns();
+    this.columns = creditNoteColumns();
     this.fetchData(this.path);
   },
   computed: {
@@ -146,13 +141,14 @@ export default {
   }
 };
 
-function remisionColumns() {
+function creditNoteColumns() {
   return [
     {
       label: "No",
       field: "public_id",
       width: "40px",
       sort: true,
+
       filter: true,
       type: "text"
     },
@@ -163,7 +159,7 @@ function remisionColumns() {
         return a;
       },
       filter: true,
-      width: "140px",
+      width: "150px",
       type: "string"
     },
     {
@@ -171,24 +167,11 @@ function remisionColumns() {
       field: "date",
       width: "80px",
       sort(a, b) {
-        return new Date(date) - new Date(date);
+        return new Date(a.date) - new Date(b.date);
       },
-      filter: true
-    },
-    {
-      label: "Vence en",
-      field: "due_date",
-      width: "80px",
-      sort(a, b) {
-        return new Date(a.due_date) - new Date(b.due_date);
+      format(value) {
+        return moment(value).fromNow();
       },
-      filter: true
-    },
-    {
-      label: "Estado",
-      field: "status_id",
-      width: "70px",
-      sort: true,
       filter: true
     },
     {
@@ -202,7 +185,20 @@ function remisionColumns() {
         return accounting.formatMoney(value);
       },
       type: "string",
-      width: "80px"
+      width: "70px"
+    },
+    {
+      label: "Por aplicar",
+      field: "total",
+      filter: false,
+      sort(t) {
+        return t;
+      },
+      format(value) {
+        return accounting.formatMoney(value);
+      },
+      type: "string",
+      width: "70px"
     }
   ];
 }

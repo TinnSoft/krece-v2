@@ -1,13 +1,13 @@
 <template>
-    <q-data-table  :data="dataFinal" :config="config" :columns="columns">
+    <q-data-table ref="_mainTable" :data="dataFinal" :config="config" :columns="columns" >
         <template slot="col-status_id" slot-scope="cell">
-            <Remision_Status :id="cell.row.status_id"></Remision_Status>           
+            <InvoiceStatus  :id="cell.row.status_id"></InvoiceStatus>
         </template>
 
     </q-data-table>
 </template>
 <script type="text/javascript">
-import Remision_Status from "../../../components/status/Remision.vue";
+import InvoiceStatus from "../../../components/status/Invoice.vue";
 import Toggle from "../../../components/tables/Toggle.vue";
 import kButton from "../../../components/tables/Button.vue";
 
@@ -24,9 +24,9 @@ export default {
     QDataTable,
     kButton,
     Toggle,
-    Remision_Status
+    InvoiceStatus
   },
-  props: ["path", "kmodule", "model"],
+  props: ["path", "kmodule"],
   methods: {
     fetchData(path) {
       let vm = this;
@@ -51,7 +51,7 @@ export default {
       let cols = vm.columns;
       cols.clear;
 
-      let colListToApply = remisionColumns();
+      let colListToApply = invoiceColumns();
 
       vm.$set(vm, "columns", colListToApply);
 
@@ -106,9 +106,10 @@ export default {
     };
   },
   created() {
-    this.columns = remisionColumns();
+    this.columns = invoiceColumns();
     this.fetchData(this.path);
   },
+
   computed: {
     dataFinal() {
       return this.table;
@@ -146,7 +147,10 @@ export default {
   }
 };
 
-function remisionColumns() {
+
+
+
+function invoiceColumns() {
   return [
     {
       label: "No",
@@ -159,39 +163,30 @@ function remisionColumns() {
     {
       label: "Cliente",
       field: "name",
-      sort(a) {
-        return a;
-      },
-      filter: true,
-      width: "140px",
-      type: "string"
-    },
-    {
-      label: "Creación",
-      field: "date",
       width: "80px",
-      sort(a, b) {
-        return new Date(date) - new Date(date);
-      },
-      filter: true
-    },
-    {
-      label: "Vence en",
-      field: "due_date",
-      width: "80px",
-      sort(a, b) {
-        return new Date(a.due_date) - new Date(b.due_date);
-      },
-      filter: true
-    },
-    {
-      label: "Estado",
-      field: "status_id",
-      width: "70px",
       sort: true,
+      filter: true,
+      type: "text"
+    },
+    {
+      label: "Fecha",
+      field: "date",
+      width: "70px",
+      sort(a, b) {
+        return new Date(a) - new Date(b);
+      },
       filter: true
     },
     {
+      label: "Vencimiento",
+      field: "due_date",
+      width: "70px",
+      sort(a, b) {
+        return new Date(a) - new Date(b);
+      },
+      filter: true
+    },
+     {
       label: "Total",
       field: "total",
       filter: false,
@@ -203,7 +198,41 @@ function remisionColumns() {
       },
       type: "string",
       width: "80px"
+    },
+    {
+      label: "Pagado",
+      field: "total_payed",
+      filter: false,
+      sort(t) {
+        return t;
+      },
+      format(value) {
+        return accounting.formatMoney(value);
+      },
+      type: "string",
+      width: "80px"
+    },
+    {
+      label: "Por Pagar",
+      field: "pending_to_pay",
+      filter: false,
+      sort(t) {
+        return t;
+      },
+      format(value) {
+        return accounting.formatMoney(value);
+      },
+      type: "string",
+      width: "80px"
+    },
+    {
+      label: "Estado",
+      field: "status_id",
+      width: "60px",
+      sort: true,
+      filter: true
     }
   ];
 }
+
 </script>

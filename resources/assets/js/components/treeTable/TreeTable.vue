@@ -10,8 +10,9 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(item ,index)  in (arrayTreeObj)" :key="index" >
-                        <td data-th="NOMBRE" @click="toggle(item, index)" >
+           
+                    <tr v-for="(item ,index)  in (arrayTreeObj)" :key="index"  v-bind:class="[(item.id != selectedRowID.id) ? 'my-label':'text-green bg-light-green-11','']"  @click="selectedRow(item)" >
+                        <td data-th="NOMBRE" @click="toggle(item, index)">
                         
                             <span class="q-tree-link q-tree-label" v-bind:style="setPadding(item)" >                
                                  <q-icon  style="cursor: pointer;" :name="iconName(item)" color="secondary"  />
@@ -34,8 +35,8 @@
 </template>
 
 <script>
-import { Toast, QIcon, QModal, QModalLayout} from "quasar-framework";
-import kButton from '../tables/Button.vue'
+import { Toast, QIcon, QModal, QModalLayout } from "quasar-framework";
+import kButton from "../tables/Button.vue";
 import axios from "axios";
 
 export default {
@@ -50,10 +51,14 @@ export default {
     }
   },
   components: {
-    QIcon,kButton,QModal, QModalLayout
+    QIcon,
+    kButton,
+    QModal,
+    QModalLayout
   },
   data() {
     return {
+      selectedRowID: {},
       table: [],
       itemId: null,
       isExpend: true
@@ -151,6 +156,11 @@ export default {
             }
           });
       }
+    },
+    selectedRow(row, clicked) {
+      let vm = this;
+      vm.selectedRowID = row;
+      console.log(this.selectedRowID);
     }
   },
   created() {
@@ -163,10 +173,11 @@ export default {
 
 <style lang="stylus">
 table {
-    font-size: 88%;
-    table-layout: auto;
-    width: 100%;
+  font-size: 88%;
+  table-layout: auto;
+  width: 100%;
 }
+
 td {
   font-size: 12px;
 }

@@ -58,6 +58,9 @@ export default [
     { path: '/contact', name: 'contact_index', component: require('../views/contact/index.vue') },
     { path: '/contact/:id', name: 'contact_show', component: require('../views/contact/show.vue') },
 
+    { path: '/inventory', name: 'inventory_index', component: require('../views/inventory/index.vue') },
+    { path: '/inventory/:id', name: 'inventory_show', component: require('../views/inventory/show.vue') },
+
     { path: '/category', name: 'category_index', component: require('../views/category/index.vue') },
 
     { path: '/bank', name: 'bank_index', component: require('../views/bank/index.vue') },

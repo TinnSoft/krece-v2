@@ -11,8 +11,7 @@
 <script>
 import { Toast, QIcon } from "quasar-framework";
 import treetable from "../../components/treeTable/TreeTable.vue";
-import kToolbar from '../../components/Toolbar.vue'
-
+import kToolbar from "../../components/Toolbar.vue";
 
 export default {
   components: {
@@ -29,7 +28,6 @@ export default {
 </script>
 <style lang="stylus">
 .docs-tab .q-tabs {
-    margin-bottom: 15px;
+  margin-bottom: 15px;
 }
-
 </style>

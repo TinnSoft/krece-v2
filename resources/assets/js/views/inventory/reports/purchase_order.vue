@@ -1,13 +1,13 @@
 <template>
-    <q-data-table  :data="dataFinal" :config="config" :columns="columns">
-        <template slot="col-status_id" slot-scope="cell">
-            <Remision_Status :id="cell.row.status_id"></Remision_Status>           
+    <q-data-table ref="_mainTable" :data="dataFinal" :config="config" :columns="columns">
+        <template slot="col-status_id" slot-scope="cell">         
+            <PurchaseOrderStatus  :id="cell.row.status_id"></PurchaseOrderStatus>
         </template>
 
     </q-data-table>
 </template>
 <script type="text/javascript">
-import Remision_Status from "../../../components/status/Remision.vue";
+import PurchaseOrderStatus from "../../../components/status/Po.vue";
 import Toggle from "../../../components/tables/Toggle.vue";
 import kButton from "../../../components/tables/Button.vue";
 
@@ -24,9 +24,9 @@ export default {
     QDataTable,
     kButton,
     Toggle,
-    Remision_Status
+    PurchaseOrderStatus
   },
-  props: ["path", "kmodule", "model"],
+  props: ["path", "kmodule"],
   methods: {
     fetchData(path) {
       let vm = this;
@@ -51,7 +51,7 @@ export default {
       let cols = vm.columns;
       cols.clear;
 
-      let colListToApply = remisionColumns();
+      let colListToApply = poColumns();
 
       vm.$set(vm, "columns", colListToApply);
 
@@ -106,9 +106,10 @@ export default {
     };
   },
   created() {
-    this.columns = remisionColumns();
+    this.columns = poColumns();
     this.fetchData(this.path);
   },
+  mounted() {},
   computed: {
     dataFinal() {
       return this.table;
@@ -146,12 +147,12 @@ export default {
   }
 };
 
-function remisionColumns() {
+function poColumns() {
   return [
     {
       label: "No",
       field: "public_id",
-      width: "40px",
+      width: "35px",
       sort: true,
       filter: true,
       type: "text"
@@ -159,35 +160,33 @@ function remisionColumns() {
     {
       label: "Cliente",
       field: "name",
-      sort(a) {
-        return a;
-      },
+      sort: true,
       filter: true,
-      width: "140px",
+      width: "120px",
       type: "string"
     },
     {
-      label: "Creación",
+      label: "Fecha",
       field: "date",
       width: "80px",
       sort(a, b) {
-        return new Date(date) - new Date(date);
+        return new Date(a) - new Date(b);
       },
       filter: true
     },
-    {
-      label: "Vence en",
+     {
+      label: "Fecha de Entrega",
       field: "due_date",
-      width: "80px",
+      width: "90px",
       sort(a, b) {
-        return new Date(a.due_date) - new Date(b.due_date);
+        return new Date(a) - new Date(b);
       },
       filter: true
     },
     {
       label: "Estado",
       field: "status_id",
-      width: "70px",
+      width: "60px",
       sort: true,
       filter: true
     },
