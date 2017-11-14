@@ -68,4 +68,13 @@ class Category extends Model
                 ->withDepth();
 
     }
+    public static function initialize()
+    {
+        return [
+			'parent_id'=>null,
+			'description'=>null,
+			'name'=>null,
+			'niif_account' => null
+        ];
+    }
 }

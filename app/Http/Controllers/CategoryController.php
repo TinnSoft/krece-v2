@@ -13,9 +13,12 @@ use App\Models\{
 class CategoryController extends Controller
 {
 
-    public function index()
+    public function create()
     {
-      //  return view('category.index');
+        return response()
+        ->json([
+            'form' => Category::initialize()
+        ]);
     }
  
     public function CategoryIncome()
@@ -38,7 +41,8 @@ class CategoryController extends Controller
     public function store(Request $request)
     {   
         $this->validate($request, [     
-            'name' => 'required'
+            'name' => 'required',
+            'parent_id' => 'required',
         ]);
         
         $data = $request->all();  
@@ -71,6 +75,33 @@ class CategoryController extends Controller
             ->json([
                 'created' => true               
             ]);
+    }
+
+    public function edit($id)
+    {
+         $category = Category::where('id',  $id)              
+                ->orderBy('created_at', 'desc')
+                ->first();    
+         
+
+         if (!$category)
+        {
+            $notification = array(
+                'custom_message' => 'No se encontró ninguna referencia de categoría creadas!', 
+                'alert-type' => 'error'
+            );
+            return response()
+            ->json([
+                $notification
+            ]);
+        }
+ 
+        return response()
+        ->json([
+            'form' =>  $category
+        ]);
+         
+         
     }
 
 
@@ -120,4 +151,5 @@ class CategoryController extends Controller
             ]);
         }
     }
+    
 }
