@@ -215,14 +215,17 @@ export default {
       axios.get(`/api/${vm.path}`)
         .then(function(response) {
           vm.$set(vm.$data, 'form', response.data.form)
+          console.log(vm.form)
           vm.datacollection.datasets[0].data = vm.form.graph_data.weekData_income;
           vm.datacollection.datasets[1].data = vm.form.graph_data.weekData_outcome;
           vm.datacollection.labels = vm.WeekLabels;
           vm.isProcessing = false;
+         
         })
         .catch(function(error) {
           vm.isProcessing = false;
         })
+         
     },
 
   },

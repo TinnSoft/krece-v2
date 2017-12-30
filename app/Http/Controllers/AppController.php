@@ -25,114 +25,114 @@ class AppController extends Controller
     
     public function getDashboardInfo()
     {
-          $model=[];
-       
-        if(Auth::check()) {  
-          
+        $model=[];
+        
+        if(Auth::check()) {
+            
             $model= [
             //'historical'=>$this->userActivity_some(),
             'income'=>$this->income_consolidate(),
             'outcome'=>$this->outcome_consolidate(),
             'graph_data'=>$this->graph_info(),
             'pie_data'=>$this->pie_info()
-            ];         
+            ];
         }
         
-         return response()
-            ->json([
-                'form' => $model
-            ]);
+        return response()
+        ->json([
+        'form' => $model
+        ]);
     }
     
     private static function pie_info_total($isToday,$isWeek,$isMonth, $isYear)
     {
-       
-          $data=   DB::table('payment')
-                ->join('category_payment', 'category_payment.payment_id', '=', 'payment.id')
-                ->join('category','category.id','=','category_payment.category_id')
-                ->where('payment.account_id',Auth::user()->account_id)
-                ->where('payment.type_id','=','eg')
-                ->where('payment.isDeleted',0)
-                ->when($isMonth, function ($query) {
-                    return $query->whereMonth('payment.created_at', '=', date('m'));
-                })
-                ->when($isToday, function ($query) {
-                    return $query->whereDay('payment.created_at', '=', date('d'));
-                })
-                ->when($isYear, function ($query) {
-                    return $query->whereYear('payment.created_at', '=', date('Y'));
-                })
-                ->when($isWeek, function ($query) {
-                    return $query ->where(DB::Raw('week(payment.created_at)'), '=', Carbon::now()->weekOfYear) ;
-                })
-                ->select('category.name',DB::raw('SUM(category_payment.total + IFNULL(category_payment.tax_total,0)) AS total'))
-                ->groupBy('category.name')
-                ->orderBy('total','desc')
-                ->take(5)
-                ->get();
-
-             $data_others=   DB::table('payment')
-                ->join('category_payment', 'category_payment.payment_id', '=', 'payment.id')
-                ->join('category','category.id','=','category_payment.category_id')
-                ->where('payment.account_id',Auth::user()->account_id)
-                ->where('payment.type_id','=','eg')
-                ->where('payment.isDeleted',0)
-                ->when($isMonth, function ($query) {
-                    return $query->whereMonth('payment.created_at', '=', date('m'));
-                })
-                ->when($isToday, function ($query) {
-                    return $query->whereDay('payment.created_at', '=', date('d'));
-                })
-                ->when($isYear, function ($query) {
-                    return $query->whereYear('payment.created_at', '=', date('Y'));
-                })
-                ->when($isWeek, function ($query) {
-                    return $query ->where(DB::Raw('week(payment.created_at)'), '=', Carbon::now()->weekOfYear) ;
-                })
-                ->select('category.name',DB::raw('SUM(category_payment.total + IFNULL(category_payment.tax_total,0)) AS total'))
-                ->groupBy('category.name')
-                ->orderBy('total','desc')
-                ->skip(5)->take(10000)
-                ->get()->sum('total');
-           
-            if ($data_others>0)
-            {
-                $data_others=['name'=>'Otros','total'=>$data_others];
-                $data->push($data_others);
-                $data->all();
-            }
-            
-            if ($data->isEmpty())
-            {
-                return collect(['name'=>['No hay datos suficientes'], 'total'=>[0]]);
-            }
-
-            return collect(['name'=>$data->pluck('name'), 'total'=>$data->pluck('total')]);
+        
+        $data=   DB::table('payment')
+        ->join('category_payment', 'category_payment.payment_id', '=', 'payment.id')
+        ->join('category','category.id','=','category_payment.category_id')
+        ->where('payment.account_id',Auth::user()->account_id)
+        ->where('payment.type_id','=','eg')
+        ->where('payment.isDeleted',0)
+        ->when($isMonth, function ($query) {
+            return $query->whereMonth('payment.created_at', '=', date('m'));
+        })
+        ->when($isToday, function ($query) {
+            return $query->whereDay('payment.created_at', '=', date('d'));
+        })
+        ->when($isYear, function ($query) {
+            return $query->whereYear('payment.created_at', '=', date('Y'));
+        })
+        ->when($isWeek, function ($query) {
+            return $query ->where(DB::Raw('week(payment.created_at)'), '=', Carbon::now()->weekOfYear) ;
+        })
+        ->select('category.name',DB::raw('SUM(category_payment.total + IFNULL(category_payment.tax_total,0)) AS total'))
+        ->groupBy('category.name')
+        ->orderBy('total','desc')
+        ->take(5)
+        ->get();
+        
+        $data_others=   DB::table('payment')
+        ->join('category_payment', 'category_payment.payment_id', '=', 'payment.id')
+        ->join('category','category.id','=','category_payment.category_id')
+        ->where('payment.account_id',Auth::user()->account_id)
+        ->where('payment.type_id','=','eg')
+        ->where('payment.isDeleted',0)
+        ->when($isMonth, function ($query) {
+            return $query->whereMonth('payment.created_at', '=', date('m'));
+        })
+        ->when($isToday, function ($query) {
+            return $query->whereDay('payment.created_at', '=', date('d'));
+        })
+        ->when($isYear, function ($query) {
+            return $query->whereYear('payment.created_at', '=', date('Y'));
+        })
+        ->when($isWeek, function ($query) {
+            return $query ->where(DB::Raw('week(payment.created_at)'), '=', Carbon::now()->weekOfYear) ;
+        })
+        ->select('category.name',DB::raw('SUM(category_payment.total + IFNULL(category_payment.tax_total,0)) AS total'))
+        ->groupBy('category.name')
+        ->orderBy('total','desc')
+        ->skip(5)->take(10000)
+        ->get()->sum('total');
+        
+        if ($data_others>0)
+        {
+            $data_others=['name'=>'Otros','total'=>$data_others];
+            $data->push($data_others);
+            $data->all();
+        }
+        
+        if ($data->isEmpty())
+        {
+            return collect(['name'=>['No hay datos suficientes'], 'total'=>[0]]);
+        }
+        
+        return collect(['name'=>$data->pluck('name'), 'total'=>$data->pluck('total')]);
     }
-
+    
     private static function pie_info()
     {
         $mainClass=new AppController();
-
-        $byDay=$mainClass->pie_info_total(true,false,false,false);    
+        
+        $byDay=$mainClass->pie_info_total(true,false,false,false);
         
         $byWeek=$mainClass->pie_info_total(false,true,false,false);
-    
-        $byMonth= $mainClass->pie_info_total(false,false,true,false);   
+        
+        $byMonth= $mainClass->pie_info_total(false,false,true,false);
         
         $byYear= $mainClass->pie_info_total(false,false,false,true);
-       
-         $data= collect([
-            "isToday"=> $byDay,
-            "isWeek"=> $byWeek,
-            "isMonth"=> $byMonth,
-            "isYear"=> $byYear
+        
+        $data= collect([
+        "isToday"=> $byDay,
+        "isWeek"=> $byWeek,
+        "isMonth"=> $byMonth,
+        "isYear"=> $byYear
         ]);
         
         return $data;
-
+        
     }
-
+    
     public function getLogo()
     {
         $logo=null;
@@ -151,37 +151,38 @@ class AppController extends Controller
     
     public function login(Request $request)
     {
+        /*
         return response()
         ->json([
-            'resp' => ''
-        ], 422);
+        'resp' => ''
+        ], 422);*/
         
         $this->validate($request, [
         'email' => 'required|email|max:255',
         'password' => 'required|between:6,25'
         ]);
-
+        
         
         
         try
         {
-           $auth = $this->guard()->attempt(['email' => $request->input('email'), 'password' => $request->input('password')]);
+            $auth = $this->guard()->attempt(['email' => $request->input('email'), 'password' => $request->input('password')]);
         }
-    
-    catch(\Exception  $e){
+        
+        catch(\Exception  $e){
+            return response()
+            ->json([
+            'resp' => $e->getMessage()
+            ], 422);
+            
+        }
+        /*
         return response()
         ->json([
-            'resp' => $e->getMessage()
-        ], 422);
-    
-    }
-    
-    return response()
-    ->json([
         'auth' =>  $auth
-    ], 422);
-
-    
+        ], 422);
+        */
+        
         if(!$auth) {
             return redirect()
             ->back()
@@ -297,21 +298,21 @@ class AppController extends Controller
     }
     
     private static function  graph_info_total($model,$isToday,$isWeek,$isMonth, $isYear,$processType )
-    {   
+    {
         $select=[DB::raw('day(created_at) as day'),DB::raw('sum(total) as total')];
         $categorySelect=[DB::raw('day(payment.created_at) as day'),DB::raw('SUM(category_payment.total + IFNULL(category_payment.tax_total,0)) as total')];
-
+        
         $groupBy='day';
-
+        
         if ($isYear==true)
         {
-             $select=[DB::raw('month(created_at) as month'),DB::raw('sum(total) as total')];
-             $categorySelect=[DB::raw('month(payment.created_at) as month'),DB::raw('SUM(category_payment.total + IFNULL(category_payment.tax_total,0)) as total')];
-             $groupBy='month';
+            $select=[DB::raw('month(created_at) as month'),DB::raw('sum(total) as total')];
+            $categorySelect=[DB::raw('month(payment.created_at) as month'),DB::raw('SUM(category_payment.total + IFNULL(category_payment.tax_total,0)) as total')];
+            $groupBy='month';
         }
-
+        
         $data= $model::AccountID(0)
-         ->when($isMonth, function ($query) {
+        ->when($isMonth, function ($query) {
             return $query->whereMonth('created_at', '=', date('m'));
         })
         ->when($isToday, function ($query) {
@@ -322,11 +323,11 @@ class AppController extends Controller
         })
         ->when($isWeek, function ($query) {
             return $query->where(DB::Raw('week(created_at)'), '=', Carbon::now()->weekOfYear);
-        })        
+        })
         ->select($select)
         ->groupBy($groupBy)
         ->get();
-
+        
         $totalPaymentCategory=   DB::table('payment')
         ->join('category_payment', 'category_payment.payment_id', '=', 'payment.id')
         ->where('payment.account_id',Auth::user()->account_id)
@@ -347,63 +348,57 @@ class AppController extends Controller
         ->select($categorySelect)
         ->groupBy($groupBy)
         ->get();
-
+        
         //Adicionar los items encontrados en categorias al arreglo principal
-         if($totalPaymentCategory->isNotEmpty())
+        if($totalPaymentCategory->isNotEmpty())
         {
             $totalPaymentCategory = $totalPaymentCategory->each(function ($item, $key) use($data) {
-                        $data->push($item);
-                        $data->all();
-                    });
+                $data->push($item);
+                $data->all();
+            });
         }
-
+        
         return $data;
+    }
+    
+    private static function FilterDataByArray($_MainArray,$_Field2Filter,$kindOfDate)
+    {
+        return array($_MainArray->where($kindOfDate,$_Field2Filter->copy()->day)->pluck('total')->sum());
     }
     
     private static function graph_info()
     {
         $mainClass=new AppController();
-
-        $dtabyWeek=$mainClass->graph_info_total(InvoiceSaleOrder::class,false,true,false,false,'in');    
-
+        
+        $dtabyWeek=$mainClass->graph_info_total(InvoiceSaleOrder::class,false,true,false,false,'in');
+        
         $dtabyWeek_outcome=$mainClass->graph_info_total(Bill::class,false,true,false,false,'eg');
         
-        $totalbyday_permonth= $mainClass->graph_info_total(InvoiceSaleOrder::class,false,false,true,false,'in');   
+        $totalbyday_permonth= $mainClass->graph_info_total(InvoiceSaleOrder::class,false,false,true,false,'in');
         
         $totalbyday_permonth_out= $mainClass->graph_info_total(Bill::class,false,false,true,false,'eg');
         
-        $totalbyMonth_perYear_in= $mainClass->graph_info_total(InvoiceSaleOrder::class,false,false,false,true,'in');  
+        $totalbyMonth_perYear_in= $mainClass->graph_info_total(InvoiceSaleOrder::class,false,false,false,true,'in');
         
         $totalbyMonth_perYear_out= $mainClass->graph_info_total(Bill::class,false,false,false,true,'eg');
-       
+        
         //obtener rango de dias de la semana actual por numero
         $startDate = Carbon::now()->startOfWeek();
         $endDate = Carbon::now()->endOfWeek();
         
         $WeekDataArray=[];
         $WeekDataArray_out=[];
+        
+        
         while($startDate<= $endDate)
-        {            
-            $WeekDataArray2=$dtabyWeek->where('day',$startDate->copy()->day)->pluck('total')->sum();
-            $WeekDataArray2_out=$dtabyWeek_outcome->where('day',$startDate->copy()->day)->pluck('total')->sum();
-            if (count($WeekDataArray2)>0)
-            {
-                $WeekDataArray[]=$WeekDataArray2;
-            }
-            else{
-                $WeekDataArray[]=0;
-            }
+        {
+            $WeekDataArray2=$mainClass->FilterDataByArray($dtabyWeek,$startDate,'day');;
+            $WeekDataArray2_out=$mainClass->FilterDataByArray($dtabyWeek_outcome,$startDate,'day');
             
-            if (count($WeekDataArray2_out)>0)
-            {
-                $WeekDataArray_out[]=$WeekDataArray2_out;
-            }
-            else{
-                $WeekDataArray_out[]=0;
-            }
+            $WeekDataArray[]=(count($WeekDataArray2))>0?$WeekDataArray2:0;
+            $WeekDataArray_out[]=(count($WeekDataArray2_out))>0?$WeekDataArray2_out:0;
             
-            $startDate->addDay();
-            
+            $startDate->addDay();            
         }
         
         //obtener los labels para el mes actual
@@ -415,25 +410,13 @@ class AppController extends Controller
         
         while($startDayMonth<= $endDayMonth)
         {
-            $data=$totalbyday_permonth->where('day',$startDayMonth->copy()->day)->pluck('total')->sum();
-            $data_out=$totalbyday_permonth_out->where('day',$startDayMonth->copy()->day)->pluck('total')->sum();
             
-            if (count($data)>0)
-            {
-                $DataByDayForMonth_in[]=$data;
-            }
-            else{
-                $DataByDayForMonth_in[]=0;
-            }
+            $data=$mainClass->FilterDataByArray($totalbyday_permonth,$startDayMonth,'day');
+            $data_out=$mainClass->FilterDataByArray($totalbyday_permonth_out,$startDayMonth,'day');
             
-            if (count($data_out)>0)
-            {
-                $DataByDayForMonth_out[]=$data_out;
-            }
-            else{
-                $DataByDayForMonth_out[]=0;
-            }
-            
+            $DataByDayForMonth_in[]=(count($data))>0?$data:0;
+            $DataByDayForMonth_out[]=(count($data_out))>0?$data_out:0;
+
             $daysLabels[]=$startDayMonth->copy()->day;
             $startDayMonth->addDay();
         }
@@ -442,24 +425,11 @@ class AppController extends Controller
         $DataBymont_peryear_out=[];
         for ($i = 1; $i <= 12; $i++)
         {
-            $data_in=$totalbyMonth_perYear_in->where('month',$i)->pluck('total')->sum();
-            $data_out=$totalbyMonth_perYear_out->where('month',$i)->pluck('total')->sum();
+            $data_in=array($totalbyMonth_perYear_in->where('month',$i)->pluck('total')->sum());
+            $data_out=array($totalbyMonth_perYear_out->where('month',$i)->pluck('total')->sum());
             
-            if (count($data_in)>0)
-            {
-                $DataBymont_peryear_in[]=$data_in;
-            }
-            else{
-                $DataBymont_peryear_in[]=0;
-            }
-            
-            if (count($data_out)>0)
-            {
-                $DataBymont_peryear_out[]=$data_out;
-            }
-            else{
-                $DataBymont_peryear_out[]=0;
-            }
+            $DataBymont_peryear_in[]=(count($data_in))>0?$data_in:0;
+            $DataBymont_peryear_out[]=(count($data_out))>0?$data_out:0; 
         }
         
         $data= collect([
