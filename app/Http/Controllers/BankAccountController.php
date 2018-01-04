@@ -44,7 +44,10 @@ class BankAccountController extends Controller
 
     public function bank_transaction_history($bank_id)
     {
-      return $this->paymentRepo->getTransactions($bank_id,'bank_account_id');
+      return [
+          'history'=>$this->paymentRepo->getTransactions($bank_id,'bank_account_id'),
+          'bankaccountlist' => BankAccountType::select('id as value', 'description as label')->get()     
+        ];
     }
     
     public function CreateBankTransference(Request $request)

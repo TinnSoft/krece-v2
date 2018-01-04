@@ -5,26 +5,44 @@
 
         <div class="row justify-left">
             <div class="col-12 col-md-auto">
-                <cardTotal title="SALDO" background-color="teal-14" icon-name="" total="0" subtitle="Total Acumulado" />
-                
+               <!-- <cardTotal title="SALDO" background-color="teal-14" icon-name="" total="0" subtitle="TOTAL SALDO ACUMULADO" />-->
+
                 <q-card inline >
-                    <q-chip square pointing="down" color="green" style="min-width: 300px">GESTIÓN</q-chip>
+                    <q-chip square pointing="down" color="teal-14" style="min-width: 300px">
+                        <kButton  iconname="attach_money" tooltiplabel="Agregar dinero" @click="editBankModal($refs, cell.row)"></kButton>
+                        <kButton iconname="money_off" tooltiplabel="Quitar dinero" @click="show(cell)"></kButton>
+                        <kButton  iconname="swap_horiz" tooltiplabel="Transferir dinero" @click="remove(cell)"></kButton>
+                    </q-chip>
                 
                     <q-card-main style="height: 50px">
-                        <q-select
-                            v-model="select"
-                            :options="selectOptions"
-                        />
-                        <q-fab color="green" icon="keyboard_arrow_down" direction="down">
-                            <q-fab-action color="lime"  icon="attach_money" >Agregar Dinero</q-fab-action>
-                            <q-fab-action color="secondary"  icon="money_off" /> reasasa
-                            <q-fab-action color="secondary"  icon="swap_horiz" />
-                        </q-fab>
+                         <h5>{{totalAmmount}}</h5>
                     </q-card-main>
                 
                     <q-card-title style="height: 50px">    
-                        <span slot="right" class="row items-center">
-                            <q-icon name="perm_data_setting" /> 
+                        <span slot="right" class="row items-center">     
+                          TOTAL SALDO ACUMULADO               
+                        </span>
+                    </q-card-title>
+                </q-card>
+
+                
+                <q-card inline >
+                    <q-chip square pointing="down" color="green" style="min-width: 300px">
+                        <kButton  iconname="edit" tooltiplabel="Editar Banco" @click="editBankModal($refs, cell.row)"></kButton>
+                        <kButton iconname="lock_outline" tooltiplabel="Desactivar Banco" @click="show(cell)"></kButton>
+                        <kButton  iconname="add" tooltiplabel="Nuevo Banco" @click="remove(cell)"></kButton>
+                    </q-chip>
+                
+                    <q-card-main style="height: 50px">
+                        <q-select clearable filter autofocus-filter filter-placeholder=""
+                            v-model="bankSelected"
+                            float-label="Seleccione un Banco"
+                            :options="bankList"
+                        />                      
+                    </q-card-main>
+                
+                    <q-card-title style="height: 50px">    
+                        <span slot="right" class="row items-center">                          
                         </span>
                     </q-card-title>
                 </q-card>
@@ -135,11 +153,13 @@ export default {
 
       vm.isProcessing = true;
       vm.config.messages.noData = "Cargando...";
-      console.log(this.$route);
+      
       axios
         .get(`/api/${vm.path}/${this.$route.params.id}`)
         .then(function(response) {
-          vm.$set(vm, "table", response.data);
+          vm.$set(vm, "table", response.data.history);
+          vm.$set(vm, "bankList", response.data.bankaccountlist);
+          console.log(response);
           vm.isProcessing = false;
         })
         .catch(function(error) {
@@ -170,14 +190,20 @@ export default {
         });
     }
   },
+    computed: {
+        totalAmmount() {
+            return accounting.formatMoney(this.amountTotal);
+        }
+    },
   created() {
     this.fetchData();
     this.columns = bankColumns();
   },
   data() {
     return {
-      select: '',
-      selectOptions: [],
+      amountTotal:0,
+      bankSelected: '',
+      bankList: [],
       model: "bank",
       config: {
         isProcessing: false,
